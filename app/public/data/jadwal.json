@@ -1,0 +1,6 @@
+[
+  { "id": 1, "kelas": "BST", "hari": "Senin", "tanggal": "2020/04/20" },
+  { "id": 2, "kelas": "BST", "hari": "Senin", "tanggal": "2020/04/28" },
+  { "id": 3, "kelas": "AFF", "hari": "Selasa", "tanggal": "2020/04/21" },
+  { "id": 4, "kelas": "MFA", "hari": "Rabu", "tanggal": "2020/04/22" }
+]

@@ -1,0 +1,110 @@
+// Override default variables before the import
+$blue: #007bff;
+$indigo: #6610f2;
+$purple: #6f42c1;
+$pink: #e83e8c;
+$red: #dc3545;
+$orange: #fd7e14;
+$yellow: #ffc107;
+$green: #28a745;
+$teal: #20c997;
+$cyan: #17a2b8;
+$white: #fff;
+$gray: #6c757d;
+$gray-dark: #343a40;
+
+$primary: #0d47a1; /* #007bff */
+$secondary: #0091ea;
+$success: #28a745;
+$info: #17a2b8;
+$warning: #ffc107;
+$danger: #dc3545;
+$light: #f8f9fa;
+$dark: #0d47a1 /* #343a40 */;
+
+// Import Bootstrap and its default variables
+@import '~bootstrap/scss/bootstrap';
+.bg-blue {
+  background-color: $blue;
+}
+.bg-indigo {
+  background-color: $indigo;
+}
+.bg-purple {
+  background-color: $purple;
+}
+.bg-pink {
+  background-color: $pink;
+}
+.bg-red {
+  background-color: $red;
+}
+.bg-orange {
+  background-color: $orange;
+}
+.bg-yellow {
+  background-color: $yellow;
+}
+.bg-green {
+  background-color: $green;
+}
+.bg-teal {
+  background-color: $teal;
+}
+.bg-cyan {
+  background-color: $cyan;
+}
+.bg-white {
+  background-color: $white;
+}
+.bg-gray {
+  background-color: $gray;
+}
+.bg-gray-dark {
+  background-color: $gray-dark;
+}
+
+// Custom styles
+body,
+.bg-gradient-1 {
+  font-family: 'Nunito Sans', sans-serif;
+  background: rgb(13, 71, 161);
+  background: linear-gradient(
+    90deg,
+    rgba(13, 71, 161, 1) 0%,
+    rgba(0, 145, 234, 1) 55%
+  );
+}
+.navbar-dark a.nav-link {
+  color: #fff !important;
+}
+.btn-rounded {
+  border-radius: 15px;
+}
+.capitalize {
+  text-transform: capitalize;
+}
+.uppercase {
+  text-transform: uppercase;
+}
+.full-height {
+  height: 90vh;
+}
+.full-height > .card,
+.full-height > .notFound {
+  position: relative;
+  top: 50%;
+  margin: auto;
+  -webkit-transform: translateY(-50%);
+  -moz-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  -o-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+.notFound {
+  text-align: center;
+  font-size: 350%;
+}
+.custom-select {
+  z-index: 99;
+}

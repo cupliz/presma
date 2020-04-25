@@ -1,0 +1,23 @@
+[
+  {
+    "id": "BST",
+    "name": "Basic Safety Training",
+    "duration": 5,
+    "cost": "1.335.000",
+    "requirement": ["KTP", "SKES", "IJAZAH", "AKTE", "FOTO"]
+  },
+  {
+    "id": "AFF",
+    "name": "Advance Fire Fighting",
+    "duration": 3,
+    "cost": "1.025.000",
+    "requirement": ["BST", "KTP", "SKES", "IJAZAH", "AKTE", "FOTO"]
+  },
+  {
+    "id": "MFA",
+    "name": "Medical First Aid",
+    "duration": 4,
+    "cost": "745.000",
+    "requirement": ["AFF", "KTP", "SKES", "IJAZAH", "AKTE", "FOTO"]
+  }
+]

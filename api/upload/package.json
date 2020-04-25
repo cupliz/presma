@@ -1,0 +1,25 @@
+{
+  "name": "api",
+  "version": "0.0.1",
+  "description": "api pendaftaran siswa poltekpel",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "db:migrate": "knex migrate:latest",
+    "db:rollback": "knex migrate:rollback",
+    "db:seed": "knex seed:run"
+  },
+  "author": "Iyan Cupliz",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "fs-extra": "^9.0.0",
+    "knex": "^0.20.13",
+    "multer": "^1.4.2",
+    "mysql": "^2.18.1",
+    "sqlite3": "^4.1.1",
+    "uuid": "^7.0.3"
+  }
+}
