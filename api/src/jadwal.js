@@ -12,7 +12,7 @@ const updateJadwal = async (req, res) => {
   return res.json({ message: 'UPDATED' })
 }
 module.exports = (app) => {
-  app.get('/api/jadwal', async (req, res) => {
+  app.get(app.prefix + '/jadwal', async (req, res) => {
     try {
       const { id, pelatihan, hari, active } = req.query
       const result = await knex('jadwal')
@@ -26,7 +26,7 @@ module.exports = (app) => {
       res.json(result)
     } catch (error) { catchError(res, error) }
   })
-  app.post('/api/jadwal', async (req, res) => {
+  app.post(app.prefix + '/jadwal', async (req, res) => {
     try {
       if (req.body.id) {
         updateJadwal(req, res)
@@ -35,7 +35,7 @@ module.exports = (app) => {
       }
     } catch (error) { catchError(res, error) }
   })
-  app.delete('/api/jadwal/:id', async (req, res) => {
+  app.delete(app.prefix + '/jadwal/:id', async (req, res) => {
     try {
       const deleted = await knex('jadwal').where('id', req.params.id).delete()
       res.json({ message: deleted ? 'OK' : "FAILED" })

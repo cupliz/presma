@@ -8,7 +8,7 @@ node_modules
 
 # production
 build
-upload/bukti
+upload
 
 # misc
 .DS_Store

@@ -7,7 +7,9 @@ import { Container, Row, Col, Card, Button, Form } from 'react-bootstrap'
 import DatePicker from 'react-datepicker'
 import Select from 'react-select'
 import { toast } from 'react-toastify'
+import { IoIosCloseCircleOutline, IoIosCheckmarkCircleOutline } from 'react-icons/io'
 import Papa from 'papaparse'
+import dayjs from 'dayjs'
 
 const REST_URL = process.env.REACT_APP_REST_URL
 Papa.parsePromise = function (url) {
@@ -23,46 +25,44 @@ Papa.parsePromise = function (url) {
 }
 const formatNumber = (x) => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
 const agama = ['islam', 'katholik', 'protestan', 'hindu', 'budha', 'khong hu chu']
-// const defBiodata = {
-//   email: 'john.doe@gmail.com',
-//   phone: '081234567',
-//   ktp: '1238100002',
-//   nisn: '283818181',
-//   nama: 'john doe',
-//   agama: 'islam',
-//   gender: 'pria',
-//   warga: 'wni',
-//   tempatLahir: 'yogyakarta',
-//   tanggalLahir: '',
-//   alamat: 'Jl. Asri Gg. Beo No.92',
-//   provinsi: null,
-//   kabupaten: null,
-//   kecamatan: null,
-//   kelurahan: null,
-//   ayah: 'tony',
-//   ibu: 'camile',
-// }
+const defBio = {
+  email: 'jack.hun@gmail.com',
+  // phone: '1028319283',
+  // ktp: '8129381923',
+  // nisn: '9123819283',
+  // nama: 'jack hun',
+  // gender: 'pria',
+  // warga: 'wni',
+  // agama: 'katholik',
+  // tempatLahir: 'surabaya',
+  // tanggalLahir: '1988-02-23',
+  // alamat: 'jl kenagan no.21',
+  // ayah: 'joe',
+  // ibu: 'melisa',
+}
+
 export default () => {
   const history = useHistory()
   const dispatch = useDispatch()
   const jadwalTerpilih = useSelector(state => state.jadwalTerpilih)
   const pelatihanTerpilih = useSelector(state => state.pelatihanTerpilih)
-  const [biodata, setBiodata] = useState({})
+  const [biodata, setBiodata] = useState(defBio)
   const [wilayah, setWilayah] = useState([])
-  // const [biodataExist, setBiodataExist] = useState(false)
   useEffect(() => {
     if (!jadwalTerpilih) {
       return history.push('/')
     }
-    const fetchWilayah = async () => {
-      const prov = await Papa.parsePromise('/wilayah/provinsi.csv')
-      const kab = await Papa.parsePromise('/wilayah/kabupaten.csv')
-      const kec = await Papa.parsePromise('/wilayah/kecamatan.csv')
-      const kel = await Papa.parsePromise('/wilayah/kelurahan.csv')
-      setWilayah({ provinsi: prov.data, kabupaten: kab.data, kecamatan: kec.data, kelurahan: kel.data })
-    }
     fetchWilayah()
   }, [])
+
+  const fetchWilayah = async () => {
+    console.log('fetchWilayah')
+    const prov = await Papa.parsePromise('/wilayah/provinsi.csv')
+    const kab = await Papa.parsePromise('/wilayah/kabupaten.csv')
+    const kec = await Papa.parsePromise('/wilayah/kecamatan.csv')
+    const kel = await Papa.parsePromise('/wilayah/kelurahan.csv')
+    setWilayah({ provinsi: prov.data, kabupaten: kab.data, kecamatan: kec.data, kelurahan: kel.data })
+  }
   const cekEmail = async () => {
     let { data } = await axios.get(`${REST_URL}/peserta?email=${biodata.email}`)
     if (data.length) {
@@ -71,19 +71,18 @@ export default () => {
       data[0].kecamatan = null
       data[0].kelurahan = null
       setBiodata(Object.assign({}, data[0]))
-      console.log(data[0])
     }
   }
   const onChange = async (e) => {
-    biodata[e.target.name] = e.target.value
-    setBiodata(biodata)
+    const { name, value } = e.target
+    biodata[name] = value
+    setBiodata(Object.assign({}, biodata))
   }
   const onChangeDatepicker = (key, value) => {
-    biodata[key] = value.name
+    biodata[key] = dayjs(value).format('YYYY-MM-DD')
     setBiodata(Object.assign({}, biodata))
   }
   const onChangeWilayah = (key, value) => {
-    console.log('onChangeWilayah', key, value)
     biodata[key] = value
     setBiodata(Object.assign({}, biodata))
   }
@@ -100,39 +99,58 @@ export default () => {
     return []
   }
 
-  const nextStep = async (e) => {
+  const submitBiodata = async (e) => {
     e.preventDefault()
-    // console.log(jadwalTerpilih)
-    // console.log(pelatihanTerpilih)
     const bio = Object.assign({}, biodata)
-    if (!biodata.provinsi) { return toast.error('Provinsi harus diisi') }
-    if (!biodata.kabupaten) { return toast.error('Kabupaten harus diisi') }
-    if (!biodata.kecamatan) { return toast.error('Kecamatan harus diisi') }
-    if (!biodata.kelurahan) { return toast.error('Kelurahan harus diisi') }
 
-    bio.provinsi = biodata.provinsi.name
-    bio.kabupaten = biodata.kabupaten.name
-    bio.kecamatan = biodata.kecamatan.name
-    bio.kelurahan = biodata.kelurahan.name
+    // if (!biodata.provinsi) { return toast.error('Provinsi harus diisi') }
+    // if (!biodata.kabupaten) { return toast.error('Kabupaten harus diisi') }
+    // if (!biodata.kecamatan) { return toast.error('Kecamatan harus diisi') }
+    // if (!biodata.kelurahan) { return toast.error('Kelurahan harus diisi') }
+
+    // bio.provinsi = biodata.provinsi.name
+    // bio.kabupaten = biodata.kabupaten.name
+    // bio.kecamatan = biodata.kecamatan.name
+    // bio.kelurahan = biodata.kelurahan.name
+
     let { data } = await axios.post(`${REST_URL}/peserta`, bio)
-    dispatch({ type: 'SET_BIODATA', data })
-    history.push('/pembayaran')
+    setBiodata(data)
+  }
+  const onChangeFileUpload = async (e) => {
+    const { files, name } = e.target
+    if (biodata.id && files[0]) {
+      const formData = new FormData()
+      formData.append('file', files[0])
+      formData.append('id', biodata.id)
+      formData.append('name', name)
+      const config = { headers: { 'content-type': 'multipart/form-data' } }
+      const { status, data } = await axios.post(`${REST_URL}/peserta/upload`, formData, config)
+      if (status === 200) {
+        biodata[name] = data.filename
+        setBiodata(Object.assign({}, biodata))
+      }
+    }
+  }
+  const nextStep = () => {
+    console.log(biodata)
+    // dispatch({ type: 'SET_BIODATA', data })
+    // history.push('/pembayaran')
   }
 
   const req = {
-    bst: pelatihanTerpilih.prasyarat.includes('BST'),
-    ktp: pelatihanTerpilih.prasyarat.includes('KTP'),
-    skes: pelatihanTerpilih.prasyarat.includes('SKES'),
-    ijazah: pelatihanTerpilih.prasyarat.includes('IJAZAH'),
-    akte: pelatihanTerpilih.prasyarat.includes('AKTE'),
-    foto: pelatihanTerpilih.prasyarat.includes('FOTO')
+    bstFile: pelatihanTerpilih.prasyarat.includes('BST'),
+    ktpFile: pelatihanTerpilih.prasyarat.includes('KTP'),
+    skesFile: pelatihanTerpilih.prasyarat.includes('SKES'),
+    ijazahFile: pelatihanTerpilih.prasyarat.includes('IJAZAH'),
+    akteFile: pelatihanTerpilih.prasyarat.includes('AKTE'),
+    fotoFile: pelatihanTerpilih.prasyarat.includes('FOTO')
   }
   return (
     <div className='py-4'>
       <Container>
         <Row className='my-2'>
           <Col xs={12} sm={8}>
-            <Form onSubmit={nextStep}>
+            <Form onSubmit={submitBiodata}>
               <Card className='p-0'>
                 <Card.Header className='bg-primary text-white'><i className='fa fa-address-book' /> &nbsp; Data Peserta</Card.Header>
                 <Card.Body>
@@ -174,8 +192,9 @@ export default () => {
                     <Form.Label column='sm' sm='2'> TTL<span className='text-danger'>*</span></Form.Label>
                     <Col sm={5}><Form.Control size='sm' name='tempatLahir' placeholder='tempat lahir' onChange={onChange} defaultValue={biodata.tempatLahir || ''} required /></Col>
                     <Col sm={4}><DatePicker
+                      dateFormat="dd-MM-yyyy"
                       className='form-control form-control-sm'
-                      selected={biodata.tanggalLahir}
+                      selected={biodata.tanggalLahir ? dayjs(biodata.tanggalLahir)['$d'] : ''}
                       onChange={(date) => onChangeDatepicker('tanggalLahir', date)}
                     />
                     </Col>
@@ -291,39 +310,90 @@ export default () => {
                     <Form.Label column='sm' sm='2'> Ibu<span className='text-danger'>*</span></Form.Label>
                     <Col sm={4}><Form.Control type='text' size='sm' name='ibu' placeholder='nama ibu' onChange={onChange} defaultValue={biodata.ibu || ''} required /></Col>
                   </Form.Group>
-                </Card.Body>
-              </Card>
-              <Card className='mt-4'>
-                <Card.Body>
-                  {req.bst &&
-                    <Form.Group>
-                      <Form.File id='up-bst' label='Upload sertifikat BST' custom required={!req.bst} />
-                    </Form.Group>}
-                  {req.ktp &&
-                    <Form.Group>
-                      <Form.File id='up-ktp' label='Upload KTP' custom required={!req.ktp} />
-                    </Form.Group>}
-                  {req.skes &&
-                    <Form.Group>
-                      <Form.File id='up-skes' label='Upload FC Surat Keterangan Sehat dari Rumah Sakit yang ditunjuk oleh Dirjen Hubla' custom required={req.skes} />
-                    </Form.Group>}
-                  {req.ijazah &&
-                    <Form.Group>
-                      <Form.File id='up-izajah' label='Upload FC Ijazah Umum legalisir' custom required={req.ijazah} />
-                    </Form.Group>}
-                  {req.akte &&
-                    <Form.Group>
-                      <Form.File id='up-akte' label='Upload FC Akta kelahiran' custom required={req.akte} />
-                    </Form.Group>}
-                  {req.foto &&
-                    <Form.Group>
-                      <Form.File id='up-foto' label='Upload foto warna terbaru ukuran 3×4' custom required={req.foto} />
-                    </Form.Group>}
-                  <Button variant='secondary' className='float-left'>Kembali</Button>
-                  <Button variant='primary' className='float-right' type="submit">Lanjutkan</Button>
+                  <Button variant='primary' className='float-right' type="submit">{biodata.id ? 'Update' : 'Simpan'}</Button>
                 </Card.Body>
               </Card>
             </Form>
+            {biodata.id &&
+              <Card className='mt-4'>
+                <Card.Body>
+                  {req.bstFile &&
+                    <Form.Group as={Row}>
+                      <Col md={11}>
+                        <Form.File type="file" name="bstFile" onChange={onChangeFileUpload} custom
+                          label={biodata.bstFile ? biodata.bstFile : 'Upload sertifikat BST'} />
+                      </Col>
+                      <Col md={1}>
+                        <big className="mt-2" >{biodata.bstFile ?
+                          <IoIosCheckmarkCircleOutline className="text-success" />
+                          : <IoIosCloseCircleOutline className="text-danger" />}</big>
+                      </Col>
+                    </Form.Group>}
+                  {req.ktpFile &&
+                    <Form.Group as={Row}>
+                      <Col md={11}>
+                        <Form.File type="file" name="ktpFile" onChange={onChangeFileUpload} custom
+                          label={biodata.ktpFile ? biodata.ktpFile : 'Upload KTP'} />
+                      </Col>
+                      <Col md={1}>
+                        <big className="mt-2" >{biodata.ktpFile ?
+                          <IoIosCheckmarkCircleOutline className="text-success" />
+                          : <IoIosCloseCircleOutline className="text-danger" />}</big>
+                      </Col>
+                    </Form.Group>}
+                  {req.skesFile &&
+                    <Form.Group as={Row}>
+                      <Col md={11}>
+                        <Form.File type="file" name="skesFile" onChange={onChangeFileUpload} custom
+                          label={biodata.skesFile ? biodata.skesFile : 'Upload FC Surat Keterangan Sehat dari Rumah Sakit yang ditunjuk oleh Dirjen Hubla'} />
+                      </Col>
+                      <Col md={1}>
+                        <big className="mt-2" >{biodata.skesFile ?
+                          <IoIosCheckmarkCircleOutline className="text-success" />
+                          : <IoIosCloseCircleOutline className="text-danger" />}</big>
+                      </Col>
+                    </Form.Group>}
+                  {req.ijazahFile &&
+                    <Form.Group as={Row}>
+                      <Col md={11}>
+                        <Form.File type="file" name="ijazahFile" onChange={onChangeFileUpload} custom
+                          label={biodata.ijazahFile ? biodata.ijazahFile : 'Upload FC Ijazah Umum legalisir'} />
+                      </Col>
+                      <Col md={1}>
+                        <big className="mt-2" >{biodata.ijazahFile ?
+                          <IoIosCheckmarkCircleOutline className="text-success" />
+                          : <IoIosCloseCircleOutline className="text-danger" />}</big>
+                      </Col>
+                    </Form.Group>}
+                  {req.akteFile &&
+                    <Form.Group as={Row}>
+                      <Col md={11}>
+                        <Form.File type="file" name="akteFile" onChange={onChangeFileUpload} custom
+                          label={biodata.akteFile ? biodata.akteFile : 'Upload FC Akta kelahiran'} />
+                      </Col>
+                      <Col md={1}>
+                        <big className="mt-2" >{biodata.akteFile ?
+                          <IoIosCheckmarkCircleOutline className="text-success" />
+                          : <IoIosCloseCircleOutline className="text-danger" />}</big>
+                      </Col>
+                    </Form.Group>}
+                  {req.fotoFile &&
+                    <Form.Group as={Row}>
+                      <Col md={11}>
+                        <Form.File type="file" name="fotoFile" onChange={onChangeFileUpload} custom
+                          label={biodata.fotoFile ? biodata.fotoFile : 'Upload foto warna terbaru ukuran 3×4'} />
+                      </Col>
+                      <Col md={1}>
+                        <big className="mt-2" >{biodata.fotoFile ?
+                          <IoIosCheckmarkCircleOutline className="text-success" />
+                          : <IoIosCloseCircleOutline className="text-danger" />}</big>
+                      </Col>
+                    </Form.Group>}
+
+                  <Button variant='primary' className='float-right' onClick={nextStep}>Lanjutkan</Button>
+                </Card.Body>
+              </Card>
+            }
           </Col>
           <Col xs={12} sm={4}>
             {pelatihanTerpilih && jadwalTerpilih ?

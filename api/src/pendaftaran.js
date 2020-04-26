@@ -1,7 +1,7 @@
 const fs = require('fs-extra')
 const path = require('path')
 const multer = require('multer')
-const uploadBukti = multer({ dest: path.join(__dirname, '../upload/bukti') })
+const upload = multer({ dest: path.join(__dirname, '../upload/pembayaran') })
 const knex = require('../db/knex')
 
 const catchError = (res, e) => {
@@ -25,7 +25,7 @@ const updateData = async (req, res) => {
   return res.json({ message: 'UPDATED' })
 }
 module.exports = (app) => {
-  app.post('/api/konfirmasi', uploadBukti.single('file'), async (req, res) => {
+  app.post(app.prefix + '/konfirmasi', upload.single('file'), async (req, res) => {
     try {
       const { destination, filename, originalname } = req.file
       const buktiPembayaran = `${req.body.kode}.${originalname.split('.').pop()}`
@@ -36,7 +36,7 @@ module.exports = (app) => {
       res.json({ message: result ? 'OK' : 'FAILED' })
     } catch (error) { catchError(res, error) }
   })
-  app.get('/api/pendaftaran', async (req, res) => {
+  app.get(app.prefix + '/pendaftaran', async (req, res) => {
     try {
       const { id, email, phone } = req.query
       const result = await knex('pendaftaran')
@@ -49,7 +49,7 @@ module.exports = (app) => {
       res.json(result)
     } catch (error) { catchError(res, error) }
   })
-  app.post('/api/pendaftaran', async (req, res) => {
+  app.post(app.prefix + '/pendaftaran', async (req, res) => {
     try {
       if (req.body.id) {
         updateData(req, res)
@@ -58,7 +58,7 @@ module.exports = (app) => {
       }
     } catch (error) { catchError(res, error) }
   })
-  app.delete('/api/pendaftaran/:id', async (req, res) => {
+  app.delete(app.prefix + '/pendaftaran/:id', async (req, res) => {
     try {
       const deleted = await knex('pendaftaran').where('id', req.params.id).delete()
       res.json({ message: deleted ? 'OK' : "FAILED" })

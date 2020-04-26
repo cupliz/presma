@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { useSelector, useDispatch } from 'react-redux'
-import { useHistory, Link } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { Container, Row, Col, Card, ListGroup, Form, Button } from 'react-bootstrap'
 import { toast } from 'react-toastify'
 import { customAlphabet } from 'nanoid'
@@ -20,7 +20,7 @@ export default (props) => {
   const jadwalTerpilih = useSelector(state => state.jadwalTerpilih)
   const pelatihanTerpilih = useSelector(state => state.pelatihanTerpilih)
   const biodataPeserta = useSelector(state => state.biodataPeserta)
-  const kodePembayaran = useSelector(state => state.kodePembayaran)
+  const pendaftaran = useSelector(state => state.pendaftaran)
   const [bank, setBank] = useState(null)
 
   useEffect(() => {
@@ -38,7 +38,6 @@ export default (props) => {
       kode: nanoid(),
       pelatihan: pelatihanTerpilih.id,
       jadwal: jadwalTerpilih.id,
-      jadwal: jadwalTerpilih.id,
       peserta: biodataPeserta.id,
       bank: bank,
     }
@@ -46,10 +45,13 @@ export default (props) => {
     if (data) {
       toast.success(message/* , { onClose: () =>  } */)
       dispatch({ type: 'KONFIRMASI', data: payload })
+      dispatch({ type: 'SET_JADWAL', data: {} })
+      dispatch({ type: 'SET_PELATIHAN', data: {} })
+      dispatch({ type: 'SET_BIODATA', data: {} })
     }
 
   }
-  const bankTerpilih = kodePembayaran.bank ? daftarBank.filter(r => r.id === kodePembayaran.bank)[0] : {}
+  const bankTerpilih = pendaftaran && pendaftaran.bank ? daftarBank.filter(r => r.id === pendaftaran.bank)[0] : {}
   return (
     <Container className='mt-4'>
       <Row>
@@ -76,7 +78,7 @@ export default (props) => {
           </div>
         </Col>
         <Col>
-          {kodePembayaran ?
+          {pendaftaran ?
             <Card>
               <Card.Header className="bg-primary text-white">Pilih metode pembayaran</Card.Header>
               <Card.Body>
@@ -85,10 +87,10 @@ export default (props) => {
                   Bank: <b className="text-primary">{bankTerpilih.label}</b> <br />
                   A/N: <b className="text-primary">{bankTerpilih.nama}</b> <br />
                   REK: <b className="text-primary">{bankTerpilih.rek}</b> <br />
-                  <br/>
-                  KODE PEMBAYARAN: <b className="text-primary">{kodePembayaran.kode}</b> <br />
                   <br />
-                  <i className="text-danger">* Cantumkan kode pembayaran di bagian deskripsi transfer</i><br/>
+                  KODE PEMBAYARAN: <b className="text-primary">{pendaftaran.kode}</b> <br />
+                  <br />
+                  <i className="text-danger">* Cantumkan kode pembayaran di bagian deskripsi transfer</i><br />
                   <i className="text-danger">* Copy paste kode unik untuk melakukan konfirmasi</i>
                 </p>
                 <Button onClick={() => history.push('/konfirmasi')}>Konfirmasi</Button>

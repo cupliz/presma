@@ -2,7 +2,7 @@ import axios from 'axios'
 import React, { useState, useEffect } from 'react'
 // import { useSelector } from 'react-redux'
 // import { useHistory, Link } from 'react-router-dom'
-import { Container, Row, Col, Card, ListGroup, Form, Button } from 'react-bootstrap'
+import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap'
 import { toast } from 'react-toastify'
 
 const REST_URL = process.env.REACT_APP_REST_URL
@@ -27,8 +27,8 @@ export default (props) => {
     formData.append('file', bukti)
     formData.append('kode', kode)
     const config = { headers: { 'content-type': 'multipart/form-data' } }
-    const { data, status } = await axios.post(`${REST_URL}/konfirmasi`, formData, config)
-    if (status == 200) {
+    const { status } = await axios.post(`${REST_URL}/konfirmasi`, formData, config)
+    if (status === 200) {
       const message = <div>Kami akan lakukan verifikasi pembayaran anda. Terima kasih.</div>
       toast.success(message, {
         onClose: () => setKonfirmasi({})

@@ -1,10 +1,9 @@
 const INITIAL_STATE = {
   auth: null,
-  cart: null,
   jadwalTerpilih: {},
   pelatihanTerpilih: {},
   biodataPeserta: {},
-  kodePembayaran: null
+  pendaftaran: null
 }
 
 // REDUCERS
@@ -14,8 +13,6 @@ export const rootReducer = (state = INITIAL_STATE, { type, data }) => {
       return Object.assign({}, state, { auth: data })
     case 'LOGOUT':
       return Object.assign({}, state, { auth: null })
-    case 'SET_CART':
-      return Object.assign({}, state, { cart: data })
     case 'SET_JADWAL':
       return Object.assign({}, state, { jadwalTerpilih: data })
     case 'SET_PELATIHAN':
@@ -23,7 +20,7 @@ export const rootReducer = (state = INITIAL_STATE, { type, data }) => {
     case 'SET_BIODATA':
       return Object.assign({}, state, { biodataPeserta: data })
     case 'KONFIRMASI':
-      return Object.assign({}, state, { kodePembayaran: data })
+      return Object.assign({}, state, { pendaftaran: data })
     default:
       return state
   }

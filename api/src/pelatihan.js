@@ -15,7 +15,7 @@ const updatePelatihan = async (req, res) => {
 }
 
 module.exports = (app) => {
-  app.get('/api/pelatihan', async (req, res) => {
+  app.get(app.prefix + '/pelatihan', async (req, res) => {
     try {
       const { id, nama } = req.query
       let result = await knex('pelatihan')
@@ -27,7 +27,7 @@ module.exports = (app) => {
       res.json(result)
     } catch (error) { catchError(res, error) }
   })
-  app.post('/api/pelatihan', async (req, res) => {
+  app.post(app.prefix + '/pelatihan', async (req, res) => {
     try {
       if (req.body.id) {
         updatePelatihan(req, res)
@@ -41,7 +41,7 @@ module.exports = (app) => {
       }
     } catch (error) { catchError(res, error) }
   })
-  app.delete('/api/pelatihan/:id', async (req, res) => {
+  app.delete(app.prefix + '/pelatihan/:id', async (req, res) => {
     try {
       const deleted = await knex('pelatihan').where('id', req.params.id).delete()
       res.json({ message: deleted ? 'OK' : "FAILED" })

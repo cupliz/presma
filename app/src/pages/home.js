@@ -12,12 +12,21 @@ export default (props) => {
   const [kelas, setKelas] = useState([])
   const [jadwal, setJadwal] = useState([])
 
+  useEffect(() => { // componentDidMount
+    fetchKelas()
+  }, [])
   const fetchKelas = async () => {
     let { data } = await axios.get(`${REST_URL}/pelatihan`)
+    if (pelatihanTerpilih) {
+      const getPelatihanTerpilih = data.filter(r => r.id == pelatihanTerpilih.id)
+      if (getPelatihanTerpilih.length) {
+        findJadwal(getPelatihanTerpilih[0].nama)
+      }
+    }
     setKelas(data)
   }
   const onPilihProgram = (e) => {
-    const data = kelas[e.target.value]
+    const data = kelas.filter(r => r.id == e.target.value)[0]
     dispatch({ type: 'SET_PELATIHAN', data })
     findJadwal(data.nama)
   }
@@ -29,9 +38,6 @@ export default (props) => {
     dispatch({ type: 'SET_JADWAL', data })
     history.push('/biodata')
   }
-  useEffect(() => {
-    fetchKelas()
-  }, [])
   return (
     <div className='mt-4'>
       <Container>
@@ -40,9 +46,9 @@ export default (props) => {
             <Card className='p-0' >
               <Card.Header className='bg-primary text-white text-center'>Pilih Program Pelatihan</Card.Header>
               <Card.Body>
-                <Form.Control as='select' onChange={onPilihProgram} defaultValue=''>
+                <Form.Control as='select' onChange={onPilihProgram} value={pelatihanTerpilih.id}>
                   <option value='' disabled>--Pilih program</option>
-                  {kelas.map((k, i) => <option key={i} value={i}>({k.nama}) {k.deskripsi}</option>)}
+                  {kelas.map((k, i) => <option key={i} value={k.id}>({k.nama}) {k.deskripsi}</option>)}
                 </Form.Control>
                 <br />
                 {pelatihanTerpilih && pelatihanTerpilih.nama === 'BST' &&

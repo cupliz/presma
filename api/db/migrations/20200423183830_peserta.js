@@ -5,6 +5,7 @@ exports.up = async function (knex) {
     return knex.schema
       .createTable('peserta', function (table) {
         table.increments()
+        table.integer('aktif').defaultTo(1)
         table.string('email')
         table.string('phone')
         table.string('ktp')
@@ -25,7 +26,12 @@ exports.up = async function (knex) {
         table.string('rw')
         table.string('ayah')
         table.string('ibu')
-        table.integer('aktif').defaultTo(1)
+        table.string('ktpFile')
+        table.string('skesFile')
+        table.string('ijazahFile')
+        table.string('akteFile')
+        table.string('fotoFile')
+        table.string('bstFile')
       })
   }
 };
