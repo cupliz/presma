@@ -29,11 +29,13 @@
     "redux-thunk": "^2.3.0"
   },
   "scripts": {
+    "prod": "node server.js",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "eslint --fix src/**/*.js"
+    "lint": "eslint --fix src/**/*.js",
+    "pm2": "pm2 start ecosystem.config.js"
   },
   "eslintConfig": {
     "extends": "react-app"

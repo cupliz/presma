@@ -26,7 +26,7 @@ Papa.parsePromise = function (url) {
 const formatNumber = (x) => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
 const agama = ['islam', 'katholik', 'protestan', 'hindu', 'budha', 'khong hu chu']
 const defBio = {
-  email: 'jack.hun@gmail.com',
+  // email: 'jack.hun@gmail.com',
   // phone: '1028319283',
   // ktp: '8129381923',
   // nisn: '9123819283',
@@ -49,14 +49,8 @@ export default () => {
   const [biodata, setBiodata] = useState(defBio)
   const [wilayah, setWilayah] = useState([])
   const [requirement, setRequirement] = useState([])
-  useEffect(() => {
-    if (!jadwalTerpilih) {
-      return history.push('/')
-    }
-    fetchWilayah()
-  }, [])
+
   const fetchWilayah = async () => {
-    console.log('fetchWilayah')
     const prov = await Papa.parsePromise('/wilayah/provinsi.csv')
     const kab = await Papa.parsePromise('/wilayah/kabupaten.csv')
     const kec = await Papa.parsePromise('/wilayah/kecamatan.csv')
@@ -70,6 +64,12 @@ export default () => {
     setRequirement(data)
     setWilayah({ provinsi: prov.data, kabupaten: kab.data, kecamatan: kec.data, kelurahan: kel.data })
   }
+  useEffect(() => {
+    if (!jadwalTerpilih) {
+      return history.push('/')
+    }
+    fetchWilayah()
+  }, [])
   const cekEmail = async () => {
     let { data } = await axios.get(`${REST_URL}/peserta?email=${biodata.email}`)
     if (data.length) {

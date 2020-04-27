@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { Container, Row, Col, Card, Button, Form, Table } from 'react-bootstrap'
 import axios from 'axios'
 
@@ -26,7 +26,7 @@ export default (props) => {
     setKelas(data)
   }
   const onPilihProgram = (e) => {
-    const data = kelas.filter(r => r.id == e.target.value)[0]
+    const data = kelas.filter(r => r.id.toString() === e.target.value)[0]
     setPelatihan(data)
     dispatch({ type: 'SET_PELATIHAN', data })
     findJadwal(data.nama)

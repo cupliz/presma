@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import ReactTable from 'react-table-v6'
-import { Container, Row, Col, Card, Button, Modal, Form } from 'react-bootstrap'
-import { IoMdEye, IoMdCreate, IoMdTrash, IoMdClose, IoMdCheckmark } from 'react-icons/io'
+import { Container, Row, Col, Card } from 'react-bootstrap'
+import { IoMdEye, IoMdClose, IoMdCheckmark } from 'react-icons/io'
 import Detail from './pendaftaranDetail'
 
 const REST_URL = process.env.REACT_APP_REST_URL
@@ -50,7 +50,6 @@ export default (props) => {
           <Card>
             <Card.Header className="bg-primary">
               <big className="text-white">Daftar Peserta</big>
-              {/* <Button variant="success" className="float-right" onClick={() => tambahData()} >Tambah Baru</Button> */}
             </Card.Header>
             <ReactTable
               data={data}
