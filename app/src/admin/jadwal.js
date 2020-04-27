@@ -31,7 +31,7 @@ export default (props) => {
   }
   const tambahData = () => {
     showModal(true)
-    setDetail({ active: 1 })
+    setDetail({ aktif: 1 })
   }
   const editData = (index) => {
     showModal(true)
@@ -47,12 +47,12 @@ export default (props) => {
     }
   }
   const onSubmit = async (e) => {
-    console.log('submit', detail)
     try {
       e.preventDefault()
       if (!detail.pelatihan) {
         return toast.error('Pilih kelas!')
       }
+      console.log('submit', detail)
       let { data } = await axios.post(`${REST_URL}/jadwal`, detail)
       toast.success(data.message)
       showModal(false)
@@ -75,8 +75,8 @@ export default (props) => {
     { Header: 'Hari', accessor: 'hari', width: 100 },
     { Header: 'Tanggal', accessor: 'tanggal', width: 200 },
     {
-      Header: 'Active', accessor: 'active', width: 200, Cell: props =>
-        <div className="text-center">{props.value ? <IoMdCheckmark className="text-success" /> : <IoMdClose className="text-danger" />}</div>
+      Header: 'Aktif', accessor: 'aktif', width: 200, Cell: props =>
+    <div className="text-center">{props.value ? <IoMdCheckmark className="text-success" /> : <IoMdClose className="text-danger" />}</div>
     },
 
   ]
@@ -153,12 +153,12 @@ export default (props) => {
               </Col>
             </Form.Group>
             <Form.Group as={Row}>
-              <Form.Label column='sm' sm='3'>Active<span className='text-danger'>*</span></Form.Label>
+              <Form.Label column='sm' sm='3'>Aktif<span className='text-danger'>*</span></Form.Label>
               <Col sm='3'>
-                <Form.Check type="switch" id="switch-status" label="Active"
-                  checked={detail.active ? true : false}
+                <Form.Check type="switch" id="switch-status" label="Aktif"
+                  checked={detail.aktif ? true : false}
                   onChange={e => {
-                    detail.active = e.target.checked ? 1 : 0
+                    detail.aktif = e.target.checked ? 1 : 0
                     setDetail(Object.assign({}, detail))
                   }}
                 />
