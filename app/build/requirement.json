@@ -1,0 +1,33 @@
+[
+  {
+    "id": "BST",
+    "name": "bstFile",
+    "label": "Sertifikat BST",
+    "enable": false
+  },
+  { "id": "KTP", "name": "ktpFile", "label": "KTP", "enable": false },
+  {
+    "id": "SKES",
+    "name": "skesFile",
+    "label": "Surat Keterangan Sehat dari Rumah Sakit yang ditunjuk oleh Dirjen Hubla",
+    "enable": false
+  },
+  {
+    "id": "IJAZAH",
+    "name": "ijazahFile",
+    "label": "Ijazah Umum legalisir",
+    "enable": false
+  },
+  {
+    "id": "AKTE",
+    "name": "akteFile",
+    "label": "Akta kelahiran",
+    "enable": false
+  },
+  {
+    "id": "FOTO",
+    "name": "fotoFile",
+    "label": "Foto warna terbaru ukuran 3×4",
+    "enable": false
+  }
+]

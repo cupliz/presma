@@ -39,13 +39,20 @@ module.exports = (app) => {
   app.get(app.prefix + '/pendaftaran', async (req, res) => {
     try {
       const { id, email, phone } = req.query
-      const result = await knex('pendaftaran')
+      const result = await knex('pendaftaran as d')
+        .select(
+          'u.*',
+          'k.nama as pelatihan', 'k.biaya', 'k.prasyarat',
+          'd.id', 'd.kode', 'd.bank', 'd.buktiPembayaran', 'd.cekBiodata', 'd.cekPembayaran'
+        )
         .modify((builder) => {
           if (id) { builder.where({ id }) }
           if (email) { builder.where({ email }) }
           if (phone) { builder.where({ phone }) }
         })
-        .orderBy('id', 'desc')
+        .leftJoin('peserta as u', 'u.id', 'd.peserta')
+        .leftJoin('pelatihan as k', 'k.id', 'd.pelatihan')
+        .orderBy('d.id', 'desc')
       res.json(result)
     } catch (error) { catchError(res, error) }
   })

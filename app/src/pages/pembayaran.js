@@ -23,11 +23,7 @@ export default (props) => {
   const pendaftaran = useSelector(state => state.pendaftaran)
   const [bank, setBank] = useState(null)
 
-  useEffect(() => {
-    // if (!cart) {
-    //   history.push('/')
-    // }
-  })
+  useEffect(() => { }, [])
 
   const onChange = (e) => {
     setBank(e.target.value)
@@ -61,9 +57,9 @@ export default (props) => {
               <Card.Body>
                 <span>Detail Peserta:</span>
                 <hr />
-                <label>Nama: </label><span className='float-right text-primary capitalize'>{biodataPeserta.nama}</span> <br />
-                <label>Email: </label><span className='float-right text-primary'>{biodataPeserta.email}</span> <br />
-                <label>Handphone: </label><span className='float-right text-primary'>{biodataPeserta.phone}</span> <br />
+                <label>Nama: </label><span className='float-right text-primary capitalize'>{biodataPeserta.nama || ''}</span> <br />
+                <label>Email: </label><span className='float-right text-primary'>{biodataPeserta.email || ''}</span> <br />
+                <label>Handphone: </label><span className='float-right text-primary'>{biodataPeserta.phone || ''}</span> <br />
               </Card.Body>
             </Card>
             <Card className='p-0 mt-4'>

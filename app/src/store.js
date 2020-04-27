@@ -3,7 +3,7 @@ const INITIAL_STATE = {
   jadwalTerpilih: {},
   pelatihanTerpilih: {},
   biodataPeserta: {},
-  pendaftaran: null
+  pendaftaran: {}
 }
 
 // REDUCERS

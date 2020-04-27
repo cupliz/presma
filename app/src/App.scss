@@ -108,3 +108,21 @@ body,
 .custom-select {
   z-index: 99;
 }
+.custom-file-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.dialog {
+  box-shadow: 0 8px 6px -6px black;
+  position: static;
+  left: 20%;
+  top: 10%;
+  z-index: 99;
+}
+.img-small {
+  width: 100px;
+}
+.img-width {
+  width: 300px;
+}

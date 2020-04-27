@@ -8,7 +8,7 @@ const REST_URL = process.env.REACT_APP_REST_URL
 export default (props) => {
   const history = useHistory()
   const dispatch = useDispatch()
-  const pelatihanTerpilih = useSelector(state => state.pelatihanTerpilih)
+  const [pelatihan, setPelatihan] = useState({})
   const [kelas, setKelas] = useState([])
   const [jadwal, setJadwal] = useState([])
 
@@ -17,16 +17,17 @@ export default (props) => {
   }, [])
   const fetchKelas = async () => {
     let { data } = await axios.get(`${REST_URL}/pelatihan`)
-    if (pelatihanTerpilih) {
-      const getPelatihanTerpilih = data.filter(r => r.id == pelatihanTerpilih.id)
-      if (getPelatihanTerpilih.length) {
-        findJadwal(getPelatihanTerpilih[0].nama)
-      }
-    }
+    // if (pelatihan) {
+    //   const getpelatihan = data.filter(r => r.id == pelatihan.id)
+    //   if (getpelatihan.length) {
+    //     findJadwal(getpelatihan[0].nama)
+    //   }
+    // }
     setKelas(data)
   }
   const onPilihProgram = (e) => {
     const data = kelas.filter(r => r.id == e.target.value)[0]
+    setPelatihan(data)
     dispatch({ type: 'SET_PELATIHAN', data })
     findJadwal(data.nama)
   }
@@ -46,15 +47,15 @@ export default (props) => {
             <Card className='p-0' >
               <Card.Header className='bg-primary text-white text-center'>Pilih Program Pelatihan</Card.Header>
               <Card.Body>
-                <Form.Control as='select' onChange={onPilihProgram} value={pelatihanTerpilih.id}>
+                <Form.Control as='select' onChange={onPilihProgram} value={pelatihan.id || ""}>
                   <option value='' disabled>--Pilih program</option>
                   {kelas.map((k, i) => <option key={i} value={k.id}>({k.nama}) {k.deskripsi}</option>)}
                 </Form.Control>
                 <br />
-                {pelatihanTerpilih && pelatihanTerpilih.nama === 'BST' &&
+                {pelatihan && pelatihan.nama === 'BST' &&
                   <div>
-                    <label className='primary'>Biaya</label>: <b className='text-primary'>{pelatihanTerpilih.biaya}</b> <br />
-                    <label className='primary'>Waktu</label>: {pelatihanTerpilih.waktu} hari
+                    <label className='primary'>Biaya</label>: <b className='text-primary'>{pelatihan.biaya}</b> <br />
+                    <label className='primary'>Waktu</label>: {pelatihan.waktu} hari
                     <img src='/img/BST.jpg' className='rounded img-fluid' alt='bst' />
                     <h5 className='mt-4'>Persyaratan:</h5>
                     <div className='p-2'>
@@ -66,10 +67,10 @@ export default (props) => {
                     6. Foto warna terbaru ukuran 3×4 (2lbr) <br />
                     </div>
                   </div>}
-                {pelatihanTerpilih && pelatihanTerpilih.nama === 'AFF' &&
+                {pelatihan && pelatihan.nama === 'AFF' &&
                   <div>
-                    <label className='primary'>Biaya</label>: <b className='text-primary'>{pelatihanTerpilih.biaya}</b> <br />
-                    <label className='primary'>Waktu</label>: {pelatihanTerpilih.waktu} hari
+                    <label className='primary'>Biaya</label>: <b className='text-primary'>{pelatihan.biaya}</b> <br />
+                    <label className='primary'>Waktu</label>: {pelatihan.waktu} hari
                     <img src='/img/AFF.jpg' className='rounded img-fluid' alt='aff' />
                     <h5 className='mt-4'>Persyaratan:</h5>
                     <div className='p-2'>
@@ -82,10 +83,10 @@ export default (props) => {
                     7. Foto warna terbaru ukuran 3×4 (2lbr) <br />
                     </div>
                   </div>}
-                {pelatihanTerpilih && pelatihanTerpilih.nama === 'MFA' &&
+                {pelatihan && pelatihan.nama === 'MFA' &&
                   <div>
-                    <label className='primary'>Biaya</label>: <b className='text-primary'>{pelatihanTerpilih.biaya}</b> <br />
-                    <label className='primary'>Waktu</label>: {pelatihanTerpilih.waktu} hari
+                    <label className='primary'>Biaya</label>: <b className='text-primary'>{pelatihan.biaya}</b> <br />
+                    <label className='primary'>Waktu</label>: {pelatihan.waktu} hari
                     <img src='/img/MFA.jpg' className='rounded img-fluid' alt='mfa' />
                     <h5 className='mt-4'>Persyaratan:</h5>
                     <div className='p-2'>
