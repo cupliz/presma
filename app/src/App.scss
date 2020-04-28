@@ -26,18 +26,22 @@ $dark: #0d47a1 /* #343a40 */;
 @import '~bootstrap/scss/bootstrap';
 .bg-blue {
   background-color: $blue;
+  color: $white;
 }
 .bg-indigo {
   background-color: $indigo;
+  color: $white;
 }
 .bg-purple {
   background-color: $purple;
+  color: $white;
 }
 .bg-pink {
   background-color: $pink;
 }
 .bg-red {
   background-color: $red;
+  color: $white;
 }
 .bg-orange {
   background-color: $orange;
@@ -62,6 +66,9 @@ $dark: #0d47a1 /* #343a40 */;
 }
 .bg-gray-dark {
   background-color: $gray-dark;
+}
+.bg-primary {
+  color: $white;
 }
 
 // Custom styles
@@ -89,17 +96,17 @@ body,
 }
 .full-height {
   height: 90vh;
-}
-.full-height > .card,
-.full-height > .notFound {
-  position: relative;
-  top: 50%;
-  margin: auto;
-  -webkit-transform: translateY(-50%);
-  -moz-transform: translateY(-50%);
-  -ms-transform: translateY(-50%);
-  -o-transform: translateY(-50%);
-  transform: translateY(-50%);
+  .card,
+  .notFound {
+    position: relative;
+    top: 50%;
+    margin: auto;
+    -webkit-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+    transform: translateY(-50%);
+  }
 }
 .notFound {
   text-align: center;

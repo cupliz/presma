@@ -26,7 +26,7 @@ Papa.parsePromise = function (url) {
 const formatNumber = (x) => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
 const agama = ['islam', 'katholik', 'protestan', 'hindu', 'budha', 'khong hu chu']
 const defBio = {
-  // email: 'jack.hun@gmail.com',
+  email: 'john.doe@gmail.com',
   // phone: '1028319283',
   // ktp: '8129381923',
   // nisn: '9123819283',
@@ -50,34 +50,38 @@ export default () => {
   const [wilayah, setWilayah] = useState([])
   const [requirement, setRequirement] = useState([])
 
-  const fetchWilayah = async () => {
-    const prov = await Papa.parsePromise('/wilayah/provinsi.csv')
-    const kab = await Papa.parsePromise('/wilayah/kabupaten.csv')
-    const kec = await Papa.parsePromise('/wilayah/kecamatan.csv')
-    const kel = await Papa.parsePromise('/wilayah/kelurahan.csv')
-    let { data } = await axios.get('/requirement.json')
-    if (pelatihanTerpilih) {
-      for (const d of data) {
-        d.enable = pelatihanTerpilih.prasyarat.includes(d.id)
-      }
-    }
-    setRequirement(data)
-    setWilayah({ provinsi: prov.data, kabupaten: kab.data, kecamatan: kec.data, kelurahan: kel.data })
-  }
   useEffect(() => {
-    if (!jadwalTerpilih) {
+    if (!jadwalTerpilih.id || !pelatihanTerpilih.id) {
       return history.push('/')
     }
+    const fetchWilayah = async () => {
+      const prov = await Papa.parsePromise('/wilayah/provinsi.csv')
+      const kab = await Papa.parsePromise('/wilayah/kabupaten.csv')
+      const kec = await Papa.parsePromise('/wilayah/kecamatan.csv')
+      const kel = await Papa.parsePromise('/wilayah/kelurahan.csv')
+      let { data } = await axios.get('/requirement.json')
+      if (pelatihanTerpilih) {
+        for (const d of data) {
+          d.enable = pelatihanTerpilih.prasyarat.includes(d.id)
+        }
+      }
+      setRequirement(data)
+      setWilayah({ provinsi: prov.data, kabupaten: kab.data, kecamatan: kec.data, kelurahan: kel.data })
+    }
     fetchWilayah()
-  }, [])
+  }, [history, jadwalTerpilih, pelatihanTerpilih])
   const cekEmail = async () => {
-    let { data } = await axios.get(`${REST_URL}/peserta?email=${biodata.email}`)
-    if (data.length) {
-      data[0].provinsi = null
-      data[0].kabupaten = null
-      data[0].kecamatan = null
-      data[0].kelurahan = null
-      setBiodata(Object.assign({}, data[0]))
+    if (biodata.email) {
+      let { data } = await axios.get(`${REST_URL}/peserta?email=${biodata.email}`)
+      if (data.length) {
+        data[0].provinsi = null
+        data[0].kabupaten = null
+        data[0].kecamatan = null
+        data[0].kelurahan = null
+        setBiodata(Object.assign({}, data[0]))
+      }
+    }else{
+      setBiodata(Object.assign({}))
     }
   }
   const onChange = async (e) => {
@@ -142,7 +146,7 @@ export default () => {
   }
   const nextStep = () => {
     for (const r of requirement) {
-      if (biodata[r.name] === null) {
+      if (pelatihanTerpilih.prasyarat.includes(r.id) && biodata[r.name] === null) {
         toast.error(`Dokumen "${r.label}" tidak lengkap`)
       } else {
         dispatch({ type: 'SET_BIODATA', data: biodata })
@@ -151,7 +155,6 @@ export default () => {
       }
     }
   }
-
   return (
     <div className='py-4'>
       <Container>
@@ -159,7 +162,7 @@ export default () => {
           <Col xs={12} sm={8}>
             <Form onSubmit={submitBiodata}>
               <Card className='p-0'>
-                <Card.Header className='bg-primary text-white'><IoMdBook /> &nbsp; Data Peserta</Card.Header>
+                <Card.Header className='bg-warning'><IoMdBook /> &nbsp; Data Peserta</Card.Header>
                 <Card.Body>
                   <Form.Group as={Row}>
                     <Form.Label column='sm' sm='2'> Email <span className='text-danger'>*</span></Form.Label>
@@ -355,7 +358,7 @@ export default () => {
                   <span>Program yang telah anda pilih:</span>
                   <hr />
                   <label>Kelas: </label><span className='float-right text-primary'>{pelatihanTerpilih.nama}</span> <br />
-                  <label>Biaya: </label><span className='float-right text-primary'>{formatNumber(pelatihanTerpilih.biaya)}</span> <br />
+                  <label>Biaya: </label><span className='float-right text-primary'>{formatNumber(pelatihanTerpilih.biaya) || 0}</span> <br />
                   <label>Waktu: </label><span className='float-right text-primary'>{jadwalTerpilih.tanggal}</span> <br />
                 </Card.Body>
               </Card>

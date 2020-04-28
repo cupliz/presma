@@ -23,7 +23,11 @@ export default (props) => {
   const pendaftaran = useSelector(state => state.pendaftaran)
   const [bank, setBank] = useState(null)
 
-  useEffect(() => { }, [])
+  useEffect(() => {
+    if (!biodataPeserta.id || !pelatihanTerpilih.id || !jadwalTerpilih.id) {
+      history.push('/')
+    }
+  }, [])
 
   const onChange = (e) => {
     setBank(e.target.value)
@@ -39,11 +43,11 @@ export default (props) => {
     }
     let { data } = await axios.post(`${REST_URL}/pendaftaran`, payload)
     if (data) {
-      toast.success(message/* , { onClose: () =>  } */)
+      toast.success(message)
       dispatch({ type: 'KONFIRMASI', data: payload })
-      dispatch({ type: 'SET_JADWAL', data: {} })
-      dispatch({ type: 'SET_PELATIHAN', data: {} })
-      dispatch({ type: 'SET_BIODATA', data: {} })
+      // dispatch({ type: 'SET_JADWAL', data: null })
+      // dispatch({ type: 'SET_PELATIHAN', data: null })
+      // dispatch({ type: 'SET_BIODATA', data: null })
     }
 
   }
@@ -76,7 +80,7 @@ export default (props) => {
         <Col>
           {pendaftaran ?
             <Card>
-              <Card.Header className="bg-primary text-white">Pilih metode pembayaran</Card.Header>
+              <Card.Header className="bg-warning">Pilih metode pembayaran</Card.Header>
               <Card.Body>
                 <p>
                   Silahkan lakukan pembayaran ke: <br />

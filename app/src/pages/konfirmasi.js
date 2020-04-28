@@ -9,7 +9,7 @@ const REST_URL = process.env.REACT_APP_REST_URL
 export default (props) => {
   // const history = useHistory()
   const [konfirmasi, setKonfirmasi] = useState({})
-  const [status, setStatus] = useState({})
+  const [statusPembayaran, setStatusPembayaran] = useState([])
   const [sertifikatHtml, setSertifikat] = useState(null)
   useEffect(() => { }, [])
   const onChangeKonfirmasi = (e) => {
@@ -27,23 +27,21 @@ export default (props) => {
     formData.append('file', bukti)
     formData.append('kode', kode)
     const config = { headers: { 'content-type': 'multipart/form-data' } }
-    const { status } = await axios.post(`${REST_URL}/konfirmasi`, formData, config)
-    if (status === 200) {
+    const res = await axios.post(`${REST_URL}/konfirmasi`, formData, config)
+    if (res.status === 200) {
       const message = <div>Kami akan lakukan verifikasi pembayaran anda. Terima kasih.</div>
       toast.success(message, {
         onClose: () => setKonfirmasi({})
       })
     }
   }
-  const onCekStatus = (e) => {
+  const onCekStatus = async (e) => {
     e.preventDefault()
-    const { code } = e.target
-    console.log('onCekStatus')
-    setStatus({ code, biodata: true, pembayaran: false })
-  }
-  const verifikasi = (status) => {
-    console.log(status)
-    return <span className={`text-${status ? 'success' : 'danger'}`}>{status ? 'OK' : 'GAGAL'}</span>
+    const { email } = e.target
+    console.log(email.value)
+    const { data } = await axios.get(`${REST_URL}/pendaftaran?email=`, email.value)
+    console.log(data)
+    // setStatus({ code, biodata: true, pembayaran: false })
   }
   const onCekSertifikat = async (e) => {
     e.preventDefault(e)
@@ -112,16 +110,11 @@ export default (props) => {
             <Card.Body>
               <Form name="konfirmasi" onSubmit={onCekStatus}>
                 <Form.Group as={Row}>
-                  <Form.Label column='sm' sm='4'>Kode Daftar<span className='text-danger'>*</span></Form.Label>
-                  <Col sm='8'><Form.Control size='sm' type='text' name='code' placeholder='kode pendaftaran' required /></Col>
+                  <Form.Label column='sm' sm='4'>Email<span className='text-danger'>*</span></Form.Label>
+                  <Col sm='8'><Form.Control size='sm' type='text' name='email' placeholder='email pendaftaran' required /></Col>
                 </Form.Group>
                 <Button type="submit">Cari</Button>
               </Form>
-              <br />
-              {status && status.code && <div>
-                <li>Verifikasi Biodata: {verifikasi(status.biodata || false)} </li>
-                <li>Verifikasi Pembayaran: {verifikasi(status.pembayaran || false)} </li>
-              </div>}
             </Card.Body>
           </Card>
         </Col>

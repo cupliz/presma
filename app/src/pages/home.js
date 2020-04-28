@@ -13,18 +13,18 @@ export default (props) => {
   const [jadwal, setJadwal] = useState([])
 
   useEffect(() => { // componentDidMount
+    const fetchKelas = async () => {
+      let { data } = await axios.get(`${REST_URL}/pelatihan`)
+      // if (pelatihan) {
+      //   const getpelatihan = data.filter(r => r.id == pelatihan.id)
+      //   if (getpelatihan.length) {
+      //     findJadwal(getpelatihan[0].nama)
+      //   }
+      // }
+      setKelas(data)
+    }
     fetchKelas()
   }, [])
-  const fetchKelas = async () => {
-    let { data } = await axios.get(`${REST_URL}/pelatihan`)
-    // if (pelatihan) {
-    //   const getpelatihan = data.filter(r => r.id == pelatihan.id)
-    //   if (getpelatihan.length) {
-    //     findJadwal(getpelatihan[0].nama)
-    //   }
-    // }
-    setKelas(data)
-  }
   const onPilihProgram = (e) => {
     const data = kelas.filter(r => r.id.toString() === e.target.value)[0]
     setPelatihan(data)
@@ -45,7 +45,7 @@ export default (props) => {
         <Row>
           <Col xs={12} sm={6}>
             <Card className='p-0' >
-              <Card.Header className='bg-primary text-white text-center'>Pilih Program Pelatihan</Card.Header>
+              <Card.Header className='bg-warning text-center'>Pilih Program Pelatihan</Card.Header>
               <Card.Body>
                 <Form.Control as='select' onChange={onPilihProgram} value={pelatihan.id || ""}>
                   <option value='' disabled>--Pilih program</option>
@@ -105,7 +105,7 @@ export default (props) => {
           <Col xs={12} sm={6}>
             {jadwal.length ?
               <Card className='p-0'>
-                <Card.Header className='bg-primary text-white text-center'>Pilih Waktu Pelatihan</Card.Header>
+                <Card.Header className='bg-warning text-center'>Pilih Waktu Pelatihan</Card.Header>
                 <Card.Body>
                   <Table responsive='sm' size='md' borderless>
                     <thead>
