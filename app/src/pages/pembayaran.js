@@ -29,7 +29,7 @@ export default (props) => {
     if (!biodataPeserta.id || !pelatihanTerpilih.id || !jadwalTerpilih.id) {
       history.push('/')
     }
-  }, [])
+  }, [history, biodataPeserta, pelatihanTerpilih, jadwalTerpilih])
 
   const onChange = (e) => {
     setBank(e.target.value)

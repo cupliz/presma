@@ -1,8 +1,6 @@
 import axios from 'axios'
 import React, { useState, useEffect } from 'react'
-import { Card, Row, Col, Modal, Image, Form } from 'react-bootstrap'
-// import { IoMdEye, IoMdCreate, IoMdTrash, IoMdClose, IoMdCheckmark } from 'react-icons/io'
-// import Image from 'components/image'
+import { Row, Col, Modal, Image, Form } from 'react-bootstrap'
 
 const REST_URL = process.env.REACT_APP_REST_URL
 export default ({ detail, show, onHide }) => {

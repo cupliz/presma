@@ -1,5 +1,5 @@
 import axios from 'axios'
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Container, Row, Col, Card, Form, Button, Table } from 'react-bootstrap'
 import { IoMdCheckmark, IoMdClose } from 'react-icons/io'
 import { toast } from 'react-toastify'

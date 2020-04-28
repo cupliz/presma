@@ -69,7 +69,7 @@ export default () => {
       setWilayah({ provinsi: prov.data, kabupaten: kab.data, kecamatan: kec.data, kelurahan: kel.data })
     }
     fetchWilayah()
-  }, [history, pelatihanTerpilih])
+  }, [dispatch, history, pelatihanTerpilih])
   const cekEmail = async () => {
     if (biodata.email) {
       let { data } = await axios.get(`${REST_URL}/peserta?email=${biodata.email}`)
