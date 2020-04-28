@@ -1,9 +1,9 @@
 import axios from 'axios'
 import React, { useState, useEffect } from 'react'
-// import { useSelector } from 'react-redux'
-// import { useHistory, Link } from 'react-router-dom'
-import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap'
+import { Container, Row, Col, Card, Form, Button, Table } from 'react-bootstrap'
+import { IoMdCheckmark, IoMdClose } from 'react-icons/io'
 import { toast } from 'react-toastify'
+
 
 const REST_URL = process.env.REACT_APP_REST_URL
 export default (props) => {
@@ -11,7 +11,8 @@ export default (props) => {
   const [konfirmasi, setKonfirmasi] = useState({})
   const [statusPembayaran, setStatusPembayaran] = useState([])
   const [sertifikatHtml, setSertifikat] = useState(null)
-  useEffect(() => { }, [])
+
+  // konfirmasi funtions
   const onChangeKonfirmasi = (e) => {
     if (e.target.files) {
       konfirmasi[e.target.name] = e.target.files[0]
@@ -35,18 +36,28 @@ export default (props) => {
       })
     }
   }
+
+  // status functions
   const onCekStatus = async (e) => {
     e.preventDefault()
     const { email } = e.target
-    console.log(email.value)
     const { data } = await axios.get(`${REST_URL}/pendaftaran?email=`, email.value)
-    console.log(data)
-    // setStatus({ code, biodata: true, pembayaran: false })
+    setStatusPembayaran(data)
   }
+  const copyKode = (value) => {
+    navigator.clipboard.writeText(value)
+    konfirmasi.kode = value
+    setKonfirmasi(Object.assign({}, konfirmasi))
+  }
+
+  // sertifikat functions
   const onCekSertifikat = async (e) => {
     e.preventDefault(e)
     try {
       const { kodeSertifikat, kodePelaut } = e.target
+      if (!kodeSertifikat.value && !kodePelaut.value) {
+        return toast.error('masukkan kode sertifikat atau kode pelaut yang akan diverifikasi')
+      }
       let params = { "sentdata[0][basepath]": "/", "sentdata[0][captcha]": "" }
       if (kodePelaut.value) {
         params["sentdata[0][stringtofind]"] = kodePelaut.value
@@ -82,8 +93,9 @@ export default (props) => {
   }
   return (
     <Container>
+      {/* Konfirmasi Pembayaran */}
       <Row>
-        <Col xs={12} md={6}>
+        <Col xs={12} lg={6}>
           <br />
           <Card>
             <Card.Header className="bg-warning"> Konfirmasi pembayaran </Card.Header>
@@ -103,24 +115,54 @@ export default (props) => {
             </Card.Body>
           </Card>
         </Col>
-        <Col xs={12} md={6}>
+      </Row>
+
+      {/* Status Pembayaran */}
+      <Row>
+        <Col xs={12} lg={10}>
           <br />
           <Card>
             <Card.Header className="bg-warning"> Cek status peserta </Card.Header>
             <Card.Body>
               <Form name="konfirmasi" onSubmit={onCekStatus}>
                 <Form.Group as={Row}>
-                  <Form.Label column='sm' sm='4'>Email<span className='text-danger'>*</span></Form.Label>
-                  <Col sm='8'><Form.Control size='sm' type='text' name='email' placeholder='email pendaftaran' required /></Col>
+                  <Form.Label column='sm' sm={2}>Email<span className='text-danger'>*</span></Form.Label>
+                  <Col sm={10} lg={5}><Form.Control defaultValue="john.doe@gmail.com" size='sm' type='text' name='email' placeholder='email pendaftaran' required /></Col>
                 </Form.Group>
                 <Button type="submit">Cari</Button>
               </Form>
+              {statusPembayaran.length ?
+                <Table responsive='sm' size='md' borderless>
+                  <thead style={{ color: '#666' }} className="text-center">
+                    <tr>
+                      <th>Kode </th>
+                      <th>Pelatihan</th>
+                      <th>Tanggal</th>
+                      <th>Bayar</th>
+                      <th>Aktif</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {statusPembayaran.map((sp, i) => (
+                      <tr key={i} className="text-center">
+                        <td>{sp.kode} &nbsp; {!sp.buktiPembayaran && <button className="btn btn-primary btn-sm" onClick={() => copyKode(sp.kode)}>Copy</button>}</td>
+                        <td>{sp.pelatihan}</td>
+                        <td>{sp.tanggal}</td>
+                        <td>{sp.buktiPembayaran ? <IoMdCheckmark className="text-success" /> : <IoMdClose className="text-danger" />}</td>
+                        <td>{sp.cekPembayaran && sp.cekBiodata ? <IoMdCheckmark className="text-success" /> : <IoMdClose className="text-danger" />}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+                : null}
             </Card.Body>
           </Card>
         </Col>
       </Row>
+
+      {/* Verifikasi Pelaut */}
       <Row>
-        <Col xs={12} md={12}>
+        <Col>
           <br />
           <Card>
             <Card.Header className="bg-warning">Verifikasi Pelaut & Sertifikat</Card.Header>
@@ -142,6 +184,7 @@ export default (props) => {
           </Card>
         </Col>
       </Row>
+      <br />
     </Container >
   )
 }

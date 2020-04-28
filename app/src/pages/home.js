@@ -1,8 +1,9 @@
+import axios from 'axios'
 import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { Container, Row, Col, Card, Button, Form, Table } from 'react-bootstrap'
-import axios from 'axios'
+import { formatRibuan } from 'helpers/index'
 
 const REST_URL = process.env.REACT_APP_REST_URL
 export default (props) => {
@@ -54,7 +55,7 @@ export default (props) => {
                 <br />
                 {pelatihan && pelatihan.nama === 'BST' &&
                   <div>
-                    <label className='primary'>Biaya</label>: <b className='text-primary'>{pelatihan.biaya}</b> <br />
+                    <label className='primary'>Biaya</label>: <b className='text-primary'>{formatRibuan(pelatihan.biaya)}</b> <br />
                     <label className='primary'>Waktu</label>: {pelatihan.waktu} hari
                     <img src='/img/BST.jpg' className='rounded img-fluid' alt='bst' />
                     <h5 className='mt-4'>Persyaratan:</h5>

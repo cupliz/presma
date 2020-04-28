@@ -71,6 +71,13 @@ $dark: #0d47a1 /* #343a40 */;
   color: $white;
 }
 
+.text-gray {
+  color: $gray;
+}
+.text-gray-dark {
+  color: $gray-dark;
+}
+
 // Custom styles
 body,
 .bg-gradient-1 {
@@ -132,4 +139,33 @@ body,
 }
 .img-width {
   width: 300px;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.custom-checkbox,
+.custom-switch {
+  -ms-transform: scale(2); /* IE */
+  -moz-transform: scale(2); /* FF */
+  -webkit-transform: scale(2); /* Safari and Chrome */
+  -o-transform: scale(2); /* Opera */
+  transform: scale(1.5);
+  margin: 5px;
+  margin-left: 20%;
+}
+.custom-checkbox > label,
+.custom-switch > label {
+  font-size: 70%;
+  padding-top: 5px;
+}
+
+.playground {
+  position: relative;
+  padding: 1rem;
+  border: 0.1rem solid #ececec;
+  border-radius: 8px;
+  margin-right: 0;
+  margin-left: 0;
 }

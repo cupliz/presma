@@ -22,13 +22,17 @@ export default (props) => {
     setShow(true)
     setDetail(data[index])
   }
+  const onHide = () => {
+    fetchData()
+    setShow(false)
+  }
 
   const columns = [
     {
-      Header: '', accessor: 'id', width: 110,
+      Header: '', accessor: 'id', width: 50,
       Cell: props => <button className="btn px-2 py-0 text-success" onClick={() => detailData(props.index)}><IoMdEye /></button>
     },
-    { Header: 'Nama', accessor: 'peserta', Cell: props => <span className="capitalize">{props.value}</span> },
+    { Header: 'Nama', accessor: 'nama', Cell: props => <span className="capitalize">{props.value}</span> },
     { Header: 'Bank', accessor: 'bank' },
     { Header: 'Pelatihan', accessor: 'pelatihan' },
     { Header: 'Biaya', accessor: 'biaya' },
@@ -55,11 +59,15 @@ export default (props) => {
               data={data}
               columns={columns}
               minRows={pagination.limit}
+              getTrProps={(state, rowInfo) => ({
+                onClick: () => detailData(rowInfo.index),
+                style: { cursor: rowInfo ? 'pointer' : '' }
+              })}
             />
           </Card>
         </Col>
       </Row>
-      {show && <Detail show={show} setShow={setShow} detail={detail} />}
+      {show && <Detail show={show} onHide={onHide} detail={detail} />}
     </Container>
   )
 }

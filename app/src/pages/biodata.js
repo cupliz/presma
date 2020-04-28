@@ -10,6 +10,7 @@ import { toast } from 'react-toastify'
 import { IoMdBook, IoMdCloudUpload, IoIosCloseCircleOutline, IoIosCheckmarkCircleOutline } from 'react-icons/io'
 import Papa from 'papaparse'
 import dayjs from 'dayjs'
+import Sidebar from 'components/sidebar'
 
 const REST_URL = process.env.REACT_APP_REST_URL
 Papa.parsePromise = function (url) {
@@ -23,7 +24,6 @@ Papa.parsePromise = function (url) {
     })
   })
 }
-const formatNumber = (x) => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
 const agama = ['islam', 'katholik', 'protestan', 'hindu', 'budha', 'khong hu chu']
 const defBio = {
   email: 'john.doe@gmail.com',
@@ -44,23 +44,23 @@ const defBio = {
 export default () => {
   const history = useHistory()
   const dispatch = useDispatch()
-  const jadwalTerpilih = useSelector(state => state.jadwalTerpilih)
   const pelatihanTerpilih = useSelector(state => state.pelatihanTerpilih)
   const [biodata, setBiodata] = useState(defBio)
   const [wilayah, setWilayah] = useState([])
   const [requirement, setRequirement] = useState([])
 
   useEffect(() => {
-    if (!jadwalTerpilih.id || !pelatihanTerpilih.id) {
+    if (!pelatihanTerpilih.id) {
       return history.push('/')
     }
+    dispatch({ type: 'SET_BIODATA', data: {} })
     const fetchWilayah = async () => {
       const prov = await Papa.parsePromise('/wilayah/provinsi.csv')
       const kab = await Papa.parsePromise('/wilayah/kabupaten.csv')
       const kec = await Papa.parsePromise('/wilayah/kecamatan.csv')
       const kel = await Papa.parsePromise('/wilayah/kelurahan.csv')
       let { data } = await axios.get('/requirement.json')
-      if (pelatihanTerpilih) {
+      if (pelatihanTerpilih.id) {
         for (const d of data) {
           d.enable = pelatihanTerpilih.prasyarat.includes(d.id)
         }
@@ -69,7 +69,7 @@ export default () => {
       setWilayah({ provinsi: prov.data, kabupaten: kab.data, kecamatan: kec.data, kelurahan: kel.data })
     }
     fetchWilayah()
-  }, [history, jadwalTerpilih, pelatihanTerpilih])
+  }, [history, pelatihanTerpilih])
   const cekEmail = async () => {
     if (biodata.email) {
       let { data } = await axios.get(`${REST_URL}/peserta?email=${biodata.email}`)
@@ -80,7 +80,7 @@ export default () => {
         data[0].kelurahan = null
         setBiodata(Object.assign({}, data[0]))
       }
-    }else{
+    } else {
       setBiodata(Object.assign({}))
     }
   }
@@ -145,14 +145,20 @@ export default () => {
     }
   }
   const nextStep = () => {
+    let lengkap = false
     for (const r of requirement) {
-      if (pelatihanTerpilih.prasyarat.includes(r.id) && biodata[r.name] === null) {
-        toast.error(`Dokumen "${r.label}" tidak lengkap`)
-      } else {
-        dispatch({ type: 'SET_BIODATA', data: biodata })
-        dispatch({ type: 'KONFIRMASI', data: null })
-        history.push('/pembayaran')
+      if (pelatihanTerpilih.prasyarat.includes(r.id)) {
+        if (biodata[r.name] === null) {
+          toast.error(`Dokumen "${r.label}" tidak lengkap`)
+        } else {
+          lengkap = true
+        }
       }
+    }
+    if (lengkap) {
+      dispatch({ type: 'SET_BIODATA', data: biodata })
+      dispatch({ type: 'KONFIRMASI', data: null })
+      history.push('/pembayaran')
     }
   }
   return (
@@ -352,17 +358,7 @@ export default () => {
             }
           </Col>
           <Col xs={12} sm={4}>
-            {pelatihanTerpilih && jadwalTerpilih ?
-              <Card className='p-0'>
-                <Card.Body>
-                  <span>Program yang telah anda pilih:</span>
-                  <hr />
-                  <label>Kelas: </label><span className='float-right text-primary'>{pelatihanTerpilih.nama}</span> <br />
-                  <label>Biaya: </label><span className='float-right text-primary'>{formatNumber(pelatihanTerpilih.biaya) || 0}</span> <br />
-                  <label>Waktu: </label><span className='float-right text-primary'>{jadwalTerpilih.tanggal}</span> <br />
-                </Card.Body>
-              </Card>
-              : null}
+            <Sidebar />
           </Col>
         </Row>
       </Container>

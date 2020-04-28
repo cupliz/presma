@@ -5,6 +5,8 @@ import { useHistory } from 'react-router-dom'
 import { Container, Row, Col, Card, ListGroup, Form, Button } from 'react-bootstrap'
 import { toast } from 'react-toastify'
 import { customAlphabet } from 'nanoid'
+
+import Sidebar from 'components/sidebar'
 const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', 10)
 
 const REST_URL = process.env.REACT_APP_REST_URL
@@ -56,43 +58,28 @@ export default (props) => {
     <Container className='mt-4'>
       <Row>
         <Col xs={12} sm={4}>
-          <div>
-            <Card className='p-0'>
-              <Card.Body>
-                <span>Detail Peserta:</span>
-                <hr />
-                <label>Nama: </label><span className='float-right text-primary capitalize'>{biodataPeserta.nama || ''}</span> <br />
-                <label>Email: </label><span className='float-right text-primary'>{biodataPeserta.email || ''}</span> <br />
-                <label>Handphone: </label><span className='float-right text-primary'>{biodataPeserta.phone || ''}</span> <br />
-              </Card.Body>
-            </Card>
-            <Card className='p-0 mt-4'>
-              <Card.Body>
-                <span>Program yang telah anda pilih:</span>
-                <hr />
-                <label>Kelas: </label><span className='float-right text-primary'>{pelatihanTerpilih.nama}</span> <br />
-                <label>Biaya: </label><span className='float-right text-primary'>{pelatihanTerpilih.biaya}</span> <br />
-                <label>Waktu: </label><span className='float-right text-primary'>{jadwalTerpilih.tanggal}</span> <br />
-              </Card.Body>
-            </Card>
-          </div>
+          <Sidebar />
         </Col>
         <Col>
           {pendaftaran ?
             <Card>
               <Card.Header className="bg-warning">Pilih metode pembayaran</Card.Header>
               <Card.Body>
-                <p>
+                <div>
                   Silahkan lakukan pembayaran ke: <br />
                   Bank: <b className="text-primary">{bankTerpilih.label}</b> <br />
                   A/N: <b className="text-primary">{bankTerpilih.nama}</b> <br />
                   REK: <b className="text-primary">{bankTerpilih.rek}</b> <br />
                   <br />
-                  KODE PEMBAYARAN: <b className="text-primary">{pendaftaran.kode}</b> <br />
+                    KODE PEMBAYARAN: 
+                  <div className="text-center w-100"><b className="text-primary">{pendaftaran.kode} &nbsp; </b><br/>
+                    <button className="btn btn-primary btn-sm" style={{width: 100}} onClick={() => navigator.clipboard.writeText(pendaftaran.kode)}>Copy</button>
+                  </div>
+                  <br />
                   <br />
                   <i className="text-danger">* Cantumkan kode pembayaran di bagian deskripsi transfer</i><br />
                   <i className="text-danger">* Copy paste kode unik untuk melakukan konfirmasi</i>
-                </p>
+                </div>
                 <Button onClick={() => history.push('/konfirmasi')}>Konfirmasi</Button>
               </Card.Body>
             </Card>

@@ -25,6 +25,15 @@ const updateData = async (req, res) => {
   return res.json({ message: 'UPDATED' })
 }
 module.exports = (app) => {
+
+  app.post(app.prefix + '/verifikasi', async (req, res) => {
+    const result = await knex('pendaftaran').update(req.body).where('kode', req.body.kode)
+    if (result) {
+      const detail = await knex('pendaftaran').select('cekBiodata', 'cekPembayaran').where('kode', req.body.kode).first()
+      return res.json(detail)
+    }
+    res.json({ message: 'FAILED' })
+  })
   app.post(app.prefix + '/konfirmasi', upload.single('file'), async (req, res) => {
     try {
       const { destination, filename, originalname } = req.file
@@ -42,7 +51,7 @@ module.exports = (app) => {
       const result = await knex('pendaftaran as d')
         .select(
           'u.*',
-          'k.nama as pelatihan', 'k.biaya', 'k.prasyarat',
+          'j.tanggal', 'k.nama as pelatihan', 'k.biaya', 'k.prasyarat',
           'd.id', 'd.kode', 'd.bank', 'd.buktiPembayaran', 'd.cekBiodata', 'd.cekPembayaran'
         )
         .modify((builder) => {
@@ -50,6 +59,7 @@ module.exports = (app) => {
           if (email) { builder.where({ email }) }
           if (phone) { builder.where({ phone }) }
         })
+        .leftJoin('jadwal as j', 'j.id', 'd.jadwal')
         .leftJoin('peserta as u', 'u.id', 'd.peserta')
         .leftJoin('pelatihan as k', 'k.id', 'd.pelatihan')
         .orderBy('d.id', 'desc')

@@ -5,6 +5,7 @@ import { Container, Row, Col, Card, Button, Modal, Form } from 'react-bootstrap'
 import { IoMdCreate, IoMdTrash } from 'react-icons/io'
 import Select from 'react-select'
 import { toast } from 'react-toastify'
+import { formatRibuan } from 'helpers/index'
 
 const REST_URL = process.env.REACT_APP_REST_URL
 const requirement = [
@@ -17,7 +18,6 @@ const requirement = [
   { nama: "AKTE", deskripsi: "Akta kelahiran" },
   { nama: "FOTO", deskripsi: "Foto warna terbaru ukuran 3×4" },
 ]
-const formatNumber = (x) => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
 export default (props) => {
   const [data, setData] = useState([])
   const [show, showModal] = useState(false)
@@ -83,7 +83,7 @@ export default (props) => {
     { Header: 'Nama', accessor: 'nama', width: 100 },
     { Header: 'Deskripsi', accessor: 'deskripsi', width: 200 },
     { Header: 'Waktu', accessor: 'waktu', width: 80, Cell: props => props.value + ' hari' },
-    { Header: 'Biaya', accessor: 'biaya', width: 100, Cell: props => formatNumber(props.value) },
+    { Header: 'Biaya', accessor: 'biaya', width: 100, Cell: props => formatRibuan(props.value) },
     { Header: 'Prasyarat', accessor: 'prasyarat', Cell: props => props.value.join(', ') },
 
   ]
