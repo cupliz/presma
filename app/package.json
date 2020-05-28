@@ -35,7 +35,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint --fix src/**/*.js",
-    "pm2": "pm2 start ecosystem.config.js"
+    "pm2": "pm2 start --name='presma-app' npm -- run prod"
   },
   "eslintConfig": {
     "extends": "react-app"

@@ -76,7 +76,7 @@ export default (props) => {
     { Header: 'Tanggal', accessor: 'tanggal', width: 200 },
     {
       Header: 'Aktif', accessor: 'aktif', width: 200, Cell: props =>
-    <div className="text-center">{props.value ? <IoMdCheckmark className="text-success" /> : <IoMdClose className="text-danger" />}</div>
+        <div className="text-center">{props.value ? <IoMdCheckmark className="text-success" /> : <IoMdClose className="text-danger" />}</div>
     },
 
   ]
@@ -90,7 +90,7 @@ export default (props) => {
           <Card>
             <Card.Header className="bg-primary">
               <big className="text-white">Jadwal Pelatihan</big>
-              <Button variant="success" className="float-right" onClick={() => tambahData()} >Tambah Baru</Button>
+              <Button variant="success" className="btn-sm float-right" onClick={() => tambahData()} >Tambah Baru</Button>
             </Card.Header>
             <ReactTable
               data={data}
@@ -103,13 +103,13 @@ export default (props) => {
       <Modal show={show} onHide={() => showModal(false)} size="lg">
         <Form onSubmit={onSubmit}>
           <Modal.Header closeButton>
-            <Modal.Title>{detail ? detail.name : 'Data Pelatihan'}</Modal.Title>
+            <Modal.Title>{detail.id ? 'Edit Jadwal' : 'Tambah Jadwal'}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
 
             <Form.Group as={Row}>
-              <Form.Label column='sm' sm='3'>Kelas<span className='text-danger'>*</span></Form.Label>
-              <Col sm='9'>
+              <Form.Label column='sm' xs='3'>Kelas<span className='text-danger'>*</span></Form.Label>
+              <Col xs='9'>
                 <Select
                   className='p-0 form-control-sm'
                   placeholder='Pilih kelas'
@@ -117,7 +117,7 @@ export default (props) => {
                   value={[{ nama: detail.pelatihan, deskripsi: detail.pelatihan }]}
                   onChange={(option) => {
                     detail.pelatihan = option.nama
-                    setDetail(Object.assign({}, detail))
+                    setDetail({ ...detail })
                   }}
                   getOptionLabel={option => option.deskripsi}
                   getOptionValue={option => option.nama}
@@ -126,9 +126,10 @@ export default (props) => {
               </Col>
             </Form.Group>
             <Form.Group as={Row}>
-              <Form.Label column='sm' sm='3'>Tanggal<span className='text-danger'>*</span></Form.Label>
-              <Col sm='3'>
+              <Form.Label column='sm' xs='3'>Tanggal<span className='text-danger'>*</span></Form.Label>
+              <Col xs='9'>
                 <DatePicker
+                  className="form-control"
                   // showTimeSelect
                   // timeFormat="HH:mm"
                   dateFormat="yyyy-MM-dd HH:mm"
@@ -136,7 +137,7 @@ export default (props) => {
                   onChange={(tgl) => {
                     detail.tanggal = dayjs(tgl).format('YYYY-MM-DD HH:mm:ss')
                     detail.hari = days[dayjs(detail.tanggal).format('d')]
-                    setDetail(Object.assign({}, detail))
+                    setDetail({ ...detail })
                   }}
                   injectTimes={[9, 20]}
                   timeIntervals={15}
@@ -144,8 +145,8 @@ export default (props) => {
               </Col>
             </Form.Group>
             <Form.Group as={Row}>
-              <Form.Label column='sm' sm='3'>Hari<span className='text-danger'>*</span></Form.Label>
-              <Col sm='3'>
+              <Form.Label column='sm' xs='3'>Hari<span className='text-danger'>*</span></Form.Label>
+              <Col xs='4' md='3' lg="2">
                 <Form.Control
                   className="capitalize " size='sm' type='text' name='hari'
                   value={detail.hari || ''} readOnly
@@ -153,8 +154,8 @@ export default (props) => {
               </Col>
             </Form.Group>
             <Form.Group as={Row}>
-              <Form.Label column='sm' sm='3'>Aktif<span className='text-danger'>*</span></Form.Label>
-              <Col sm='3'>
+              <Form.Label column='sm' xs='3'>Aktif<span className='text-danger'>*</span></Form.Label>
+              <Col xs='3'>
                 <Form.Check type="switch" id="switch-status" label="Aktif"
                   checked={detail.aktif ? true : false}
                   onChange={e => {

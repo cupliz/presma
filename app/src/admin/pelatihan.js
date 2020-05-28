@@ -115,25 +115,25 @@ export default (props) => {
           <Modal.Body>
 
             <Form.Group as={Row}>
-              <Form.Label column='sm' sm='3'>Nama<span className='text-danger'>*</span></Form.Label>
-              <Col sm='9'><Form.Control size='sm' type='text' name='nama' onChange={onChange} defaultValue={detail.nama || ''} required /></Col>
+              <Form.Label column='sm' xs='3'>ID<span className='text-danger'>*</span></Form.Label>
+              <Col xs="4" sm='3' md='2'><Form.Control size='sm' type='text' name='nama' onChange={onChange} placeholder="ex: BST" defaultValue={detail.nama || ''} required /></Col>
             </Form.Group>
             <Form.Group as={Row}>
-              <Form.Label column='sm' sm='3'>Deskripsi<span className='text-danger'>*</span></Form.Label>
-              <Col sm='9'><Form.Control size='sm' type='text' name='deskripsi' onChange={onChange} defaultValue={detail.deskripsi || ''} required /></Col>
+              <Form.Label column='sm' xs='3'>Nama<span className='text-danger'>*</span></Form.Label>
+              <Col xs='9'><Form.Control size='sm' type='text' name='deskripsi' onChange={onChange} placeholder="ex: Basic Safety Training" defaultValue={detail.deskripsi || ''} required /></Col>
             </Form.Group>
             <Form.Group as={Row}>
-              <Form.Label column='sm' sm='3'>Waktu<span className='text-danger'>*</span></Form.Label>
-              <Col xs='4' sm="2"><Form.Control size='sm' type='number' name='waktu' onChange={onChange} defaultValue={detail.waktu || ''} required /></Col>
+              <Form.Label column='sm' xs='3'>Waktu<span className='text-danger'>*</span></Form.Label>
+              <Col xs='3' sm='2'><Form.Control size='sm' type='number' name='waktu' onChange={onChange} defaultValue={detail.waktu || ''} required /></Col>
               <Col xs='3'>hari</Col>
             </Form.Group>
             <Form.Group as={Row}>
-              <Form.Label column='sm' sm='3'>Biaya<span className='text-danger'>*</span></Form.Label>
-              <Col sm='9'><Form.Control size='sm' type='number' name='biaya' onChange={onChange} defaultValue={detail.biaya || ''} required /></Col>
+              <Form.Label column='sm' xs='3'>Biaya<span className='text-danger'>*</span></Form.Label>
+              <Col xs='9'><Form.Control size='sm' type='number' name='biaya' onChange={onChange} defaultValue={detail.biaya || ''} required /></Col>
             </Form.Group>
             <Form.Group as={Row}>
-              <Form.Label column='sm' sm='3'>Prasyarat<span className='text-danger'>*</span></Form.Label>
-              <Col sm='9'>
+              <Form.Label column='sm' xs='3'>Prasyarat<span className='text-danger'>*</span></Form.Label>
+              <Col xs='9'>
                 <Select
                   isMulti
                   isSearchable
