@@ -26,7 +26,7 @@ Papa.parsePromise = function (url) {
 }
 const agama = ['islam', 'katholik', 'protestan', 'hindu', 'budha', 'khong hu chu']
 const defBio = {
-  email: 'john.doe@gmail.com',
+  // email: 'john.doe@gmail.com',
   // phone: '1028319283',
   // ktp: '8129381923',
   // nisn: '9123819283',

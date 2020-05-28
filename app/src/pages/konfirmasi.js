@@ -127,7 +127,7 @@ export default (props) => {
               <Form name="konfirmasi" onSubmit={onCekStatus}>
                 <Form.Group as={Row}>
                   <Form.Label column='sm' sm={2}>Email<span className='text-danger'>*</span></Form.Label>
-                  <Col sm={10} lg={5}><Form.Control defaultValue="john.doe@gmail.com" size='sm' type='text' name='email' placeholder='email pendaftaran' required /></Col>
+                  <Col sm={10} lg={5}><Form.Control size='sm' type='text' name='email' placeholder='email pendaftaran' required /></Col>
                 </Form.Group>
                 <Button type="submit">Cari</Button>
               </Form>
