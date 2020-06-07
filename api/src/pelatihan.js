@@ -1,15 +1,14 @@
 const knex = require('../db/knex')
+const { processUploadedFile, uploadPelatihan } = require('./upload')
 
 const catchError = (res, e) => res.status(500).json({ 'message': e.stack.split('\n')[0] })
 const createPelatihan = async (req, res) => {
   console.log('> create pelatihan')
-  req.body.prasyarat = JSON.stringify(req.body.prasyarat)
   await knex('pelatihan').insert(req.body)
   return res.json({ message: 'OK' })
 }
 const updatePelatihan = async (req, res) => {
   console.log('> update pelatihan')
-  req.body.prasyarat = JSON.stringify(req.body.prasyarat)
   await knex('pelatihan').update(req.body).where('id', req.body.id)
   return res.json({ message: 'OK' })
 }
@@ -27,8 +26,11 @@ module.exports = (app) => {
       res.json(result)
     } catch (error) { catchError(res, error) }
   })
-  app.post(app.prefix + '/pelatihan', async (req, res) => {
+  app.post(app.prefix + '/pelatihan', uploadPelatihan.single('gambar'), async (req, res) => {
     try {
+      if (!req.body.gambar) {
+        req.body.gambar = await processUploadedFile(req, `${req.body.nama}`)
+      }
       if (req.body.id) {
         updatePelatihan(req, res)
       } else {

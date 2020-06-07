@@ -40,13 +40,23 @@ export default (props) => {
     setDetail(data[index])
   }
   const onChange = (e) => {
-    detail[e.target.name] = e.target.value
-    setDetail(detail)
+    if (e.target.files) {
+      detail[e.target.name] = e.target.files[0]
+    } else {
+      detail[e.target.name] = e.target.value
+    }
+    setDetail(Object.assign({}, detail))
   }
   const onSubmit = async (e) => {
     e.preventDefault()
+    const formData = new FormData()
+    for (const dt of Object.entries(detail)) {
+      if (dt[0] === 'prasyarat') { dt[1] = JSON.stringify(dt[1]) }
+      formData.append(dt[0], dt[1])
+    }
+    const config = { headers: { 'content-type': 'multipart/form-data' } }
     try {
-      let response = await axios.post(REST_URL + '/pelatihan', detail)
+      let response = await axios.post(REST_URL + '/pelatihan', formData, config)
       if (response.message) {
       } else {
         showModal(false)
@@ -130,6 +140,11 @@ export default (props) => {
             <Form.Group as={Row}>
               <Form.Label column='sm' xs='3'>Biaya<span className='text-danger'>*</span></Form.Label>
               <Col xs='9'><Form.Control size='sm' type='number' name='biaya' onChange={onChange} defaultValue={detail.biaya || ''} required /></Col>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column='sm' xs='3'>Gambar<span className='text-danger'>*</span></Form.Label>
+              <Col xs='9'><Form.File type="file" name="gambar" onChange={onChange} custom
+                label={detail.gambar ? detail.gambar.name || detail.gambar : 'Upload gambar pelatihan'} /></Col>
             </Form.Group>
             <Form.Group as={Row}>
               <Form.Label column='sm' xs='3'>Prasyarat<span className='text-danger'>*</span></Form.Label>

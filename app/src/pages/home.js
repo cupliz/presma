@@ -16,12 +16,6 @@ export default (props) => {
   useEffect(() => { // componentDidMount
     const fetchKelas = async () => {
       let { data } = await axios.get(`${REST_URL}/pelatihan`)
-      // if (pelatihan) {
-      //   const getpelatihan = data.filter(r => r.id == pelatihan.id)
-      //   if (getpelatihan.length) {
-      //     findJadwal(getpelatihan[0].nama)
-      //   }
-      // }
       setKelas(data)
     }
     fetchKelas()
@@ -53,53 +47,32 @@ export default (props) => {
                   {kelas.map((k, i) => <option key={i} value={k.id}>({k.nama}) {k.deskripsi}</option>)}
                 </Form.Control>
                 <br />
-                {pelatihan && pelatihan.nama === 'BST' &&
+                {pelatihan && pelatihan.nama ?
                   <div>
                     <label className='primary'>Biaya</label>: <b className='text-primary'>{formatRibuan(pelatihan.biaya)}</b> <br />
-                    <label className='primary'>Waktu</label>: {pelatihan.waktu} hari
-                    <img src='/img/BST.jpg' className='rounded img-fluid' alt='bst' />
+                    <label className='primary'>Waktu</label>: {pelatihan.waktu} hari <br />
+                    <img src={pelatihan.gambar ? `${REST_URL}/upload/pelatihan/${pelatihan.gambar}` : `/img/no-img.png`} className='rounded img-fluid' alt='bst' />
                     <h5 className='mt-4'>Persyaratan:</h5>
-                    <div className='p-2'>
-                      1. Usia minimal 16 thn <br />
-                    2. FC KTP (2lbr) <br />
-                    3. Surat Keterangan Sehat dari Rumah Sakit yang ditunjuk oleh Dirjen Hubla <br />
-                    4. FC Ijazah Umum legalisir (2lbr) <br />
-                    5. FC Akta kelahiran (2lbr) <br />
-                    6. Foto warna terbaru ukuran 3×4 (2lbr) <br />
-                    </div>
-                  </div>}
-                {pelatihan && pelatihan.nama === 'AFF' &&
-                  <div>
-                    <label className='primary'>Biaya</label>: <b className='text-primary'>{pelatihan.biaya}</b> <br />
-                    <label className='primary'>Waktu</label>: {pelatihan.waktu} hari
-                    <img src='/img/AFF.jpg' className='rounded img-fluid' alt='aff' />
-                    <h5 className='mt-4'>Persyaratan:</h5>
-                    <div className='p-2'>
-                      1. Usia minimal 16 thn <br />
-                    2. FC sertifikat BST legalisir (2lbr) <br />
-                    3. FC KTP (2lbr) <br />
-                    4. Surat Keterangan Sehat dari Rumah Sakit yag ditunjuk oleh Dirjen Hubla <br />
-                    5. FC Ijazah Umum legalisir (2lbr) <br />
-                    6.FC Akta kelahiran (2lbr) <br />
-                    7. Foto warna terbaru ukuran 3×4 (2lbr) <br />
-                    </div>
-                  </div>}
-                {pelatihan && pelatihan.nama === 'MFA' &&
-                  <div>
-                    <label className='primary'>Biaya</label>: <b className='text-primary'>{pelatihan.biaya}</b> <br />
-                    <label className='primary'>Waktu</label>: {pelatihan.waktu} hari
-                    <img src='/img/MFA.jpg' className='rounded img-fluid' alt='mfa' />
-                    <h5 className='mt-4'>Persyaratan:</h5>
-                    <div className='p-2'>
-                      1. Usia minimal 16 thn <br />
-                    2. FC sertifikat BST legalisir (2lbr) <br />
-                    3. FC KTP (2lbr) <br />
-                    4. Surat Keterangan Sehat dari Rumah Sakit yag ditunjuk oleh Dirjen Hubla <br />
-                    5. FC Ijazah Umum legalisir (2lbr) <br />
-                    6. FC Akta kelahiran (2lbr) <br />
-                    7. Foto warna terbaru ukuran 3×4 (2lbr) <br />
-                    </div>
-                  </div>}
+                    <ul className='p-2 ml-4'>
+                      <li>Usia minimal 16 thn </li>
+                      {pelatihan.prasyarat.map(syarat => {
+                        if (syarat == 'KTP') {
+                          return <li> FC KTP (2lbr) </li>
+                        } else if (syarat == 'SKES') {
+                          return <li>Surat Keterangan Sehat dari Rumah Sakit yang ditunjuk oleh Dirjen Hubla</li>
+                        } else if (syarat == 'IJAZAH') {
+                          return <li>FC Ijazah Umum legalisir (2lbr)</li>
+                        } else if (syarat == 'AKTE') {
+                          return <li>FC Akta kelahiran (2lbr)</li>
+                        } else if (syarat == 'FOTO') {
+                          return <li>Foto warna terbaru ukuran 3×4 (2lbr)</li>
+                        } else {
+                          return <li>FC sertifikat {syarat} legalisir (2lbr)</li>
+                        }
+                      })}
+                    </ul>
+                  </div> : null
+                }
               </Card.Body>
             </Card>
           </Col>

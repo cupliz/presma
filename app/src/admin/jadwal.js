@@ -52,7 +52,6 @@ export default (props) => {
       if (!detail.pelatihan) {
         return toast.error('Pilih kelas!')
       }
-      console.log('submit', detail)
       let { data } = await axios.post(`${REST_URL}/jadwal`, detail)
       toast.success(data.message)
       showModal(false)

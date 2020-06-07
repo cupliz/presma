@@ -1,5 +1,5 @@
 const knex = require('../db/knex')
-const { processDokumen, uploadDokumen } = require('./upload')
+const { processUploadedFile, uploadDokumen } = require('./upload')
 
 module.exports = (app) => {
   // Mengambil data peserta, list maupun single
@@ -20,7 +20,7 @@ module.exports = (app) => {
   // Upload dokumen
   app.post(app.prefix + '/peserta/upload', uploadDokumen.single('file'), async (req, res) => {
     const { id, name } = req.body
-    const filename = await processDokumen(req, `${id}-${name}`)
+    const filename = await processUploadedFile(req, `${id}-${name}`)
     await knex('peserta').update({ [name]: filename }).where('id', id)
     res.json({ message: filename ? "OK" : "FAILED", filename })
   })
@@ -53,16 +53,15 @@ module.exports = (app) => {
 
 const catchError = (res, e) => res.status(500).json({ 'message': e.stack.split('\n')[0] })
 const createData = async (req, res) => {
-  // console.log('> create peserta', req.body)
   const inserted = await knex('peserta').insert(req.body)
-  console.log(inserted)
+  console.log('> create peserta', inserted, req.body.name)
   if (inserted) {
     return res.json(await knex('peserta').where('email', req.body.email).first())
   }
   return res.json({ message: 'CREATED' })
 }
 const updateData = async (req, res) => {
-  // console.log('> update peserta', req.body)
+  console.log('> update peserta', req.body.name)
   const updated = await knex('peserta').update(req.body).where('id', req.body.id)
   if (updated) {
     return res.json(await knex('peserta').where('id', req.body.id).first())

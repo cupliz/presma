@@ -2,12 +2,12 @@ const knex = require('../db/knex')
 
 const catchError = (res, e) => res.status(500).json({ 'message': e.stack.split('\n')[0] })
 const createJadwal = async (req, res) => {
-  // console.log('> create jadwal', req.body)
+  console.log('> create jadwal', req.body.pelatihan)
   await knex('jadwal').insert(req.body)
   return res.json({ message: 'CREATED' })
 }
 const updateJadwal = async (req, res) => {
-  // console.log('> update jadwal', req.body)
+  console.log('> update jadwal', req.body.pelatihan)
   await knex('jadwal').update(req.body).where('id', req.body.id)
   return res.json({ message: 'UPDATED' })
 }

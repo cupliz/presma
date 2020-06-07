@@ -41,8 +41,12 @@ export default (props) => {
   const onCekStatus = async (e) => {
     e.preventDefault()
     const { email } = e.target
-    const { data } = await axios.get(`${REST_URL}/pendaftaran?email=`, email.value)
-    setStatusPembayaran(data)
+    const { data } = await axios.get(`${REST_URL}/pendaftaran?email=${email.value}`)
+    if(data.length){
+      setStatusPembayaran(data)
+    }else{
+      toast.error('Data tidak ditemukan')
+    }
   }
   const copyKode = (value) => {
     navigator.clipboard.writeText(value)
@@ -80,15 +84,20 @@ export default (props) => {
         if (response.type !== 'type:opaque') {
           const result = await response.json()
           let html = result.hasile.split('\t')
-          const test = html[1].match(new RegExp(/src='.*.g'/))
-          const test1 = test[0].split('/').slice(-1).pop().replace("'", '')
-          const test2 = html[1].replace(/src='.*'/, `src='https://pelaut.dephub.go.id/asset/images/${test1}'/`)
-          html[1] = test2 + `</div><div class='col-lg-8'>`
-          setSertifikat(html.join('\t'))
+          if (html[1]) {
+            const test = html[1].match(new RegExp(/src='.*.g'/))
+            const test1 = test[0].split('/').slice(-1).pop().replace("'", '')
+            const test2 = html[1].replace(/src='.*'/, `src='https://pelaut.dephub.go.id/asset/images/${test1}'/`)
+            html[1] = test2 + `</div><div class='col-lg-8'>`
+            setSertifikat(html.join('\t'))
+          } else {
+            setSertifikat(html.join('\t'))
+            return toast.error('kode sertifikat atau kode pelaut tidak ditemukan')
+          }
         }
       }
     } catch (error) {
-      console.log(error)
+      console.error(error)
     }
   }
   return (

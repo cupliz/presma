@@ -25,6 +25,7 @@ export default () => {
               </Nav>
               :
               <Nav className='ml-auto'>
+                <Link to='/' className='nav-link'>Pendaftaran</Link>
                 <Link to='/konfirmasi' className='nav-link'>Konfirmasi</Link>
                 <Link to='/login' className='nav-link'>Login</Link>
               </Nav>

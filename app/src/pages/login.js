@@ -15,7 +15,6 @@ export default (props) => {
   const onSubmit = (e) => {
     e.preventDefault()
     const { username, password } = e.target
-    console.log(username.value, password.value)
     if (username.value === 'admin' && password.value === '1234') {
       dispatch({ type: 'LOGIN', data: { user: 'Administrator' } })
       history.push('/admin')
@@ -33,7 +32,7 @@ export default (props) => {
             <label className='grey-text font-weight-light'>Password</label>
             <input type='password' name='password' className='form-control' required />
             <br/>
-            demo: admin/1234
+            {/* demo: admin/1234 */}
             <div className='mt-4 mb-5'>
               <Link to='/' className='btn btn-secondary float-left'>Pendaftaran<i className='fa fa-paper-plane-o ml-2' /></Link>
               <button className='btn btn-primary float-right' type='submit'>Login<i className='fa fa-paper-plane-o ml-2' /></button>

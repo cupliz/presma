@@ -1,15 +1,14 @@
 const fs = require('fs-extra')
 const path = require('path')
-const multer = require('multer')
-const upload = multer({ dest: path.join(__dirname, '../upload/pembayaran') })
 const knex = require('../db/knex')
+const { uploadPembayaran, processUploadedFile } = require('./upload')
 
 const catchError = (res, e) => {
   console.log(e)
   res.status(500).json({ 'message': e.stack.split('\n')[0] })
 }
 const createData = async (req, res) => {
-  // console.log('> create pendaftaran', req.body)
+  console.log('> create pendaftaran', req.body.kode)
   const [inserted] = await knex('pendaftaran').insert(req.body)
   if (inserted) {
     return res.json(await knex('pendaftaran').where('id', inserted).first())
@@ -17,7 +16,7 @@ const createData = async (req, res) => {
   return res.json({ message: 'CREATED' })
 }
 const updateData = async (req, res) => {
-  // console.log('> update pendaftaran', req.body)
+  console.log('> update pendaftaran', req.body.kode)
   const updated = await knex('pendaftaran').update(req.body).where('id', req.body.id)
   if (updated) {
     return res.json(await knex('pendaftaran').where('id', req.body.id).first())
@@ -34,13 +33,9 @@ module.exports = (app) => {
     }
     res.json({ message: 'FAILED' })
   })
-  app.post(app.prefix + '/konfirmasi', upload.single('file'), async (req, res) => {
+  app.post(app.prefix + '/konfirmasi', uploadPembayaran.single('file'), async (req, res) => {
     try {
-      const { destination, filename, originalname } = req.file
-      const buktiPembayaran = `${req.body.kode}.${originalname.split('.').pop()}`
-      const srcpath = path.join(destination, filename)
-      const dstpath = path.join(destination, buktiPembayaran)
-      await fs.move(srcpath, dstpath, { overwrite: true })
+      const buktiPembayaran = await processUploadedFile(req, req.body.kode)
       const result = await knex('pendaftaran').update({ buktiPembayaran }).where('kode', req.body.kode)
       res.json({ message: result ? 'OK' : 'FAILED' })
     } catch (error) { catchError(res, error) }
