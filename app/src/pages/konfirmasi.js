@@ -2,12 +2,13 @@ import axios from 'axios'
 import React, { useState } from 'react'
 import { Container, Row, Col, Card, Form, Button, Table } from 'react-bootstrap'
 import { IoMdCheckmark, IoMdClose } from 'react-icons/io'
+import { useHistory } from 'react-router'
 import { toast } from 'react-toastify'
 
 
 const REST_URL = process.env.REACT_APP_REST_URL
 export default (props) => {
-  // const history = useHistory()
+  const history = useHistory()
   const [konfirmasi, setKonfirmasi] = useState({})
   const [statusPembayaran, setStatusPembayaran] = useState([])
   const [sertifikatHtml, setSertifikat] = useState(null)
@@ -42,9 +43,9 @@ export default (props) => {
     e.preventDefault()
     const { email } = e.target
     const { data } = await axios.get(`${REST_URL}/pendaftaran?email=${email.value}`)
-    if(data.length){
+    if (data.length) {
       setStatusPembayaran(data)
-    }else{
+    } else {
       toast.error('Data tidak ditemukan')
     }
   }
@@ -141,28 +142,39 @@ export default (props) => {
                 <Button type="submit">Cari</Button>
               </Form>
               {statusPembayaran.length ?
-                <Table responsive='sm' size='md' borderless>
-                  <thead style={{ color: '#666' }} className="text-center">
-                    <tr>
-                      <th>Kode </th>
-                      <th>Pelatihan</th>
-                      <th>Tanggal</th>
-                      <th>Bayar</th>
-                      <th>Aktif</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {statusPembayaran.map((sp, i) => (
-                      <tr key={i} className="text-center">
-                        <td>{sp.kode} &nbsp; {!sp.buktiPembayaran && <button className="btn btn-primary btn-sm" onClick={() => copyKode(sp.kode)}>Copy</button>}</td>
-                        <td>{sp.pelatihan}</td>
-                        <td>{sp.tanggal}</td>
-                        <td>{sp.buktiPembayaran ? <IoMdCheckmark className="text-success" /> : <IoMdClose className="text-danger" />}</td>
-                        <td>{sp.cekPembayaran && sp.cekBiodata ? <IoMdCheckmark className="text-success" /> : <IoMdClose className="text-danger" />}</td>
+                <div>
+                  <Table responsive='sm' size='md' borderless>
+                    <thead style={{ color: '#666' }} className="text-center">
+                      <tr>
+                        <th>Kode </th>
+                        <th>Pelatihan</th>
+                        <th>Tanggal</th>
+                        <th>Bayar</th>
+                        <th>Aktif</th>
+                        <th>Note</th>
+                        <th></th>
                       </tr>
-                    ))}
-                  </tbody>
-                </Table>
+                    </thead>
+                    <tbody>
+                      {statusPembayaran.map((sp, i) => (
+                        <tr key={i} className="text-center">
+                          <td>{sp.kode} &nbsp; {!sp.buktiPembayaran && <button className="btn btn-primary btn-sm" onClick={() => copyKode(sp.kode)}>Copy</button>}</td>
+                          <td>{sp.pelatihan}</td>
+                          <td>{sp.tanggal}</td>
+                          <td>{sp.buktiPembayaran ? <IoMdCheckmark className="text-success" /> : <IoMdClose className="text-danger" />}</td>
+                          <td>{sp.cekPembayaran && sp.cekBiodata ? <IoMdCheckmark className="text-success" /> : <IoMdClose className="text-danger" />}</td>
+                          <td className="text-danger">
+                            {sp.cekPembayaran && sp.cekBiodata ? null : sp.note}
+                          </td>
+                          <td>
+                            {sp.cekPembayaran && sp.cekBiodata ? null :
+                              <button className="btn btn-primary btn-sm" onClick={() => history.push(`/biodata?email=${statusPembayaran[0]?.email}`)} >Lengkapi</button>}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </Table>
+                </div>
                 : null}
             </Card.Body>
           </Card>

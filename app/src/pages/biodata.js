@@ -7,6 +7,7 @@ import { Container, Row, Col, Card, Button, Form } from 'react-bootstrap'
 import DatePicker from 'react-datepicker'
 import Select from 'react-select'
 import { toast } from 'react-toastify'
+import queryString from "query-string";
 import { IoMdBook, IoMdCloudUpload, IoIosCloseCircleOutline, IoIosCheckmarkCircleOutline } from 'react-icons/io'
 import Papa from 'papaparse'
 import dayjs from 'dayjs'
@@ -69,6 +70,22 @@ export default () => {
       setWilayah({ provinsi: prov.data, kabupaten: kab.data, kecamatan: kec.data, kelurahan: kel.data })
     }
     fetchWilayah()
+
+    const cekEmail = async () => {
+      if (queryString.parse(window.location.search).email) {
+        let { data } = await axios.get(`${REST_URL}/peserta?email=${queryString.parse(window.location.search).email}`)
+        if (data.length) {
+          data[0].provinsi = null
+          data[0].kabupaten = null
+          data[0].kecamatan = null
+          data[0].kelurahan = null
+          setBiodata(Object.assign({}, data[0]))
+        }
+      } else {
+        setBiodata(Object.assign({}))
+      }
+    }
+    cekEmail()
   }, [dispatch, history, pelatihanTerpilih])
   const cekEmail = async () => {
     if (biodata.email) {
@@ -125,8 +142,9 @@ export default () => {
     bio.kelurahan = biodata.kelurahan.name
 
     let { data } = await axios.post(`${REST_URL}/peserta`, bio)
+    setBiodata(data)
     dispatch({ type: 'SET_BIODATA', data: biodata })
-    const message = data.message === 'CREATED' ? 'ditambahkan' : 'diperbahrui'
+    const message = data.message === 'CREATED' ? 'ditambahkan' : 'diperbaharui'
     toast.success(`Data telah berhasil ${message}.`)
   }
   const onChangeFileUpload = async (e) => {
@@ -172,26 +190,27 @@ export default () => {
                 <Card.Body>
                   <Form.Group as={Row}>
                     <Form.Label column='sm' sm='2'> Email <span className='text-danger'>*</span></Form.Label>
-                    <Col sm={4}><Form.Control size='sm' type='email' name='email' placeholder='alamat email' onChange={onChange} defaultValue={biodata.email || ''} required /></Col>
+                    <Col sm={4}><Form.Control size='sm' type='email' name='email' placeholder='alamat email' onChange={onChange} defaultValue={biodata.email ? "" : queryString.parse(window.location.search).email} required /></Col>
                     <Col sm={6}><Button size="sm" onClick={cekEmail}>Cek by Email</Button></Col>
                   </Form.Group>
                   <Form.Group as={Row}>
                     <Form.Label column='sm' sm='2'> HP <span className='text-danger'>*</span></Form.Label>
-                    <Col sm={4}><Form.Control size='sm' type='text' name='phone' placeholder='nomor handphone' onChange={onChange} defaultValue={biodata.phone || ''} required /></Col>
+                    <Col sm={4}><Form.Control size='sm' type='number' name='phone' placeholder='nomor handphone' onChange={onChange} defaultValue={biodata.phone || ''} required /></Col>
                   </Form.Group>
 
                   <Form.Group as={Row}>
                     <Form.Label column='sm' sm='2'> ID KTP/NIK<span className='text-danger'>*</span></Form.Label>
-                    <Col sm='9'><Form.Control size='sm' type='text' name='ktp' placeholder='nomor ktp (nik)' onChange={onChange} defaultValue={biodata.ktp || ''} required /></Col>
+                    <Col sm='9'><Form.Control size='sm' type='number' name='ktp' placeholder='nomor ktp (nik)' onChange={onChange} defaultValue={biodata.ktp || ''} required /></Col>
                   </Form.Group>
-                  <Form.Group as={Row}>
+
+                  {/* <Form.Group as={Row}>
                     <Form.Label column='sm' sm='2'> NISN<span className='text-danger'>*</span></Form.Label>
                     <Col sm='9'><Form.Control size='sm' type='text' name='nisn' placeholder='nomor nisn' onChange={onChange} defaultValue={biodata.nisn || ''} required /></Col>
-                  </Form.Group>
+                  </Form.Group> */}
 
                   <Form.Group as={Row}>
                     <Form.Label column='sm' sm='2'> Nama<span className='text-danger'>*</span></Form.Label>
-                    <Col sm='9'><Form.Control size='sm' type='text' name='nama' placeholder='nama lengkap' onChange={onChange} defaultValue={biodata.nama || ''} required /></Col>
+                    <Col sm='9'><Form.Control size='sm' type='text' name='nama' placeholder='nama lengkap' pattern="^[a-zA-Z ]+$" onChange={onChange} defaultValue={biodata.nama || ''} required /></Col>
                   </Form.Group>
 
                   <Form.Group as={Row}>
@@ -206,7 +225,7 @@ export default () => {
 
                   <Form.Group as={Row}>
                     <Form.Label column='sm' sm='2'> TTL<span className='text-danger'>*</span></Form.Label>
-                    <Col sm={5}><Form.Control size='sm' name='tempatLahir' placeholder='tempat lahir' onChange={onChange} defaultValue={biodata.tempatLahir || ''} required /></Col>
+                    <Col sm={5}><Form.Control size='sm' name='tempatLahir' placeholder='tempat lahir' pattern="^[a-zA-Z ]+$" onChange={onChange} defaultValue={biodata.tempatLahir || ''} required /></Col>
                     <Col sm={4}><DatePicker
                       dateFormat="dd-MM-yyyy"
                       className='form-control form-control-sm'
@@ -326,7 +345,10 @@ export default () => {
                     <Form.Label column='sm' sm='2'> Ibu<span className='text-danger'>*</span></Form.Label>
                     <Col sm={4}><Form.Control type='text' size='sm' name='ibu' placeholder='nama ibu' onChange={onChange} defaultValue={biodata.ibu || ''} required /></Col>
                   </Form.Group>
-                  <Button variant='primary' className='float-right' type="submit">{biodata.id ? 'Update' : 'Simpan'}</Button>
+                  {queryString.parse(window.location.search).email ?
+                    <Button variant='primary' className='float-right' type="submit">Update</Button> :
+                    <Button variant='primary' className='float-right' type="submit">Simpan</Button>
+                  }
                 </Card.Body>
               </Card>
             </Form>
@@ -352,7 +374,10 @@ export default () => {
                       </Col>
                     </Form.Group>
                   })}
-                  <Button variant='primary' className='float-right' onClick={nextStep}>Lanjutkan</Button>
+                  {queryString.parse(window.location.search).email ?
+                    <Button variant='primary' className='float-right' onClick={() => { toast.success("Data berhasil diperbarui"); history.push('/konfirmasi') }}>Update</Button> :
+                    <Button variant='primary' className='float-right' onClick={nextStep}>Lanjutkan</Button>
+                  }
                 </Card.Body>
               </Card>
             }

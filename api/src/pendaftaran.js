@@ -28,10 +28,24 @@ module.exports = (app) => {
   app.post(app.prefix + '/verifikasi', async (req, res) => {
     const result = await knex('pendaftaran').update(req.body).where('kode', req.body.kode)
     if (result) {
-      const detail = await knex('pendaftaran').select('cekBiodata', 'cekPembayaran').where('kode', req.body.kode).first()
+      const detail = await knex('pendaftaran').select('cekBiodata', 'cekPembayaran', 'note').where('kode', req.body.kode).first()
       return res.json(detail)
     }
     res.json({ message: 'FAILED' })
+  })
+  app.post(app.prefix + '/verifikasidokumen', async (req, res) => {
+
+    const delFile = await knex('peserta').select(req.body.kolom).where('email', req.body.email).first()
+    await fs.remove(`./upload/dokumen/${delFile[req.body.kolom]}`, err => {
+      if (err) return console.error(err)
+    })
+    const key = req.body.kolom
+    let payload = {}
+    payload[key] = null
+    const verified = await knex('peserta').update(payload).where('email', req.body.email)
+    if (verified) {
+      return res.json(await knex('peserta').where('email', req.body.email).first())
+    }
   })
   app.post(app.prefix + '/konfirmasi', uploadPembayaran.single('file'), async (req, res) => {
     try {
@@ -47,7 +61,7 @@ module.exports = (app) => {
         .select(
           'u.*',
           'j.tanggal', 'k.nama as pelatihan', 'k.biaya', 'k.prasyarat',
-          'd.id', 'd.kode', 'd.bank', 'd.buktiPembayaran', 'd.cekBiodata', 'd.cekPembayaran'
+          'd.id', 'd.kode', 'd.bank', 'd.buktiPembayaran', 'd.cekBiodata', 'd.cekPembayaran', 'd.note'
         )
         .modify((builder) => {
           if (id) { builder.where({ id }) }

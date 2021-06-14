@@ -60,6 +60,10 @@ export default (props) => {
       toast.error(error.message)
     }
   }
+  const print = () => {
+    window.print()
+  }
+
   const columns = [
     {
       Header: '', accessor: 'id', width: 110,
@@ -83,13 +87,14 @@ export default (props) => {
     limit: 10
   }
   return (
-    <Container className='mt-4'>
+    <Container className='mt-4' id="section-to-print">
       <Row>
         <Col md={12}>
           <Card>
             <Card.Header className="bg-primary">
               <big className="text-white">Jadwal Pelatihan</big>
-              <Button variant="success" className="btn-sm float-right" onClick={() => tambahData()} >Tambah Baru</Button>
+              <Button variant="success" className="btn-sm float-right" onClick={print}>Print</Button>
+              <Button variant="success" className="btn-sm float-right mr-2" onClick={() => tambahData()} >Tambah Baru</Button>
             </Card.Header>
             <ReactTable
               data={data}
