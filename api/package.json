@@ -6,7 +6,8 @@
   "license": "ISC",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js",
+    "prod": "pm2 start --name='presma-api' server.js",
+    "dev": "nodemon server.js",
     "release": "node release.js",
     "db:migrate": "knex migrate:latest",
     "db:rollback": "knex migrate:rollback",
@@ -14,12 +15,13 @@
   },
   "dependencies": {
     "cors": "^2.8.5",
-    "dotenv": "^8.2.0",
-    "express": "^4.17.1",
-    "fs-extra": "^9.0.0",
-    "knex": "^0.20.13",
-    "multer": "^1.4.2",
+    "dotenv": "^8.6.0",
+    "express": "^4.17.2",
+    "fs-extra": "^9.1.0",
+    "knex": "^0.20.15",
+    "multer": "^1.4.4",
     "mysql": "^2.18.1",
+    "mysql2": "^2.3.3",
     "sqlite3": "^5.0.2"
   }
 }
