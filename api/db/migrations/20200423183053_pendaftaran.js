@@ -12,6 +12,7 @@ exports.up = async function (knex) {
         table.string('buktiPembayaran')
         table.integer('cekBiodata').defaultTo(0)
         table.integer('cekPembayaran').defaultTo(0)
+        table.string('note')
       })
   }
 };
